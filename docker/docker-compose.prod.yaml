@@ -1,0 +1,6 @@
+# docker-compose.prod.yml - Production overrides
+version: '3'
+services:
+  product-service:
+    environment:
+      NODE_ENV: production  # Optimizes the app for production
