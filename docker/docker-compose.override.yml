@@ -1,0 +1,16 @@
+version: '3'
+services:
+  auth-service:
+    volumes:
+      - ./auth-service:/usr/src/app
+      - /usr/src/app/node_modules
+  user-service:
+    volumes:
+      - ./user-service:/usr/src/app
+      - /usr/src/app/node_modules
+  product-service:
+    volumes:
+      - ./product-service:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      NODE_ENV: development
