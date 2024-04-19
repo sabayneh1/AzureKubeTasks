@@ -1,0 +1,20 @@
+{
+  "name": "todo-service",
+  "version": "1.0.0",
+  "description": "Manages ToDo items for users",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "jest --forceExit",  // Switch to jest for consistency if preferred
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.13.8"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "jest": "^26.6.3",  // Assuming switching to jest
+    "supertest": "^6.1.3"
+  }
+}
