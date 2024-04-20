@@ -1,0 +1,22 @@
+{
+  "name": "combined-service",
+  "version": "1.0.0",
+  "description": "Handles user management and authentication",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "jest --forceExit",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.10.9",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^8.5.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "jest": "^26.6.3",
+    "supertest": "^6.1.3"
+  }
+}
