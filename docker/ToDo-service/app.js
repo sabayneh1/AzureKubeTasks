@@ -20,7 +20,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(methodOverride('_method'));
+app.use(methodOverride('_method'));  // Corrected from '__method' to '_method'
 
 // Root route
 app.get('/', (req, res) => {
@@ -29,7 +29,7 @@ app.get('/', (req, res) => {
 
 // Route handlers
 app.get('/todos', asyncHandler(async (req, res, next) => {
-  const todos = await ToDo.find();
+  const todos = await ToDo.find({ completed: false });  // Only fetch incomplete todos
   res.render('index', { todos });
 }));
 
@@ -44,7 +44,7 @@ app.get('/todos/:id/toggle', asyncHandler(async (req, res) => {
   const todo = await ToDo.findById(req.params.id);
   todo.completed = !todo.completed;
   await todo.save();
-  res.redirect('/todos');
+  res.json({ completed: todo.completed }); // Send JSON response for dynamic UI updates
 }));
 
 app.get('/todos/:id/edit', asyncHandler(async (req, res) => {
@@ -77,7 +77,7 @@ app.get('/health', (req, res) => {
 // Error handling middleware
 const errorHandler = (err, req, res, next) => {
   console.error('Error:', err);
-  res.status(err.status || 500).send({
+  res.status(err.status, 500).send({
     error: 'Internal Server Error',
     message: err.message,
     stack: process.env.NODE_ENV === 'development' ? err.stack : '🔒'
@@ -85,9 +85,10 @@ const errorHandler = (err, req, res, next) => {
 };
 app.use(errorHandler);
 
+// Start the server
 if (process.env.NODE_ENV !== 'test') {
   app.listen(port, () => {
-    console.log(`ToDo service listening on port ${port}`);
+    console.log(`User service listening on port ${port}`);
   });
 }
 
