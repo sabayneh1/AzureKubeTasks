@@ -17,11 +17,9 @@
             min-height: 100vh;
             font-size: 16px;
         }
-
         h1 {
             color: #4a47a3;
         }
-
         form.add-todo, form.add-comment {
             width: 100%;
             max-width: 600px;
@@ -29,7 +27,6 @@
             justify-content: space-between;
             margin-bottom: 20px;
         }
-
         input[type="text"], input[type="text"]:focus {
             border: 2px solid #4a47a3;
             border-radius: 4px;
@@ -38,14 +35,12 @@
             margin-right: 10px;
             outline: none;
         }
-
         ul {
             list-style-type: none;
             padding: 0;
             width: 100%;
             max-width: 600px;
         }
-
         li {
             background-color: #fff;
             margin: 10px 0;
@@ -55,22 +50,18 @@
             display: flex;
             flex-direction: column;
         }
-
         .todo-content, .button-group, .comment-section {
-            margin-bottom: 10px; /* Added margin to separate sections within the list item */
+            margin-bottom: 10px;
         }
-
         .todo-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-
         .button-group {
             display: flex;
             gap: 10px;
         }
-
         button {
             background-color: #4a47a3;
             color: white;
@@ -80,16 +71,13 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
-
         button:hover {
             background-color: #3734a9;
         }
-
         .comment-section {
             width: 100%;
             max-width: 600px;
         }
-
         footer {
             margin-top: auto;
             font-size: 14px;
@@ -98,12 +86,10 @@
             max-width: 600px;
             text-align: center;
         }
-
         footer a {
             color: #4a47a3;
             text-decoration: none;
         }
-
         footer a:hover {
             text-decoration: underline;
         }
@@ -124,12 +110,13 @@
                         <div class="button-group">
                             <% if(todo.editing) { %>
                                 <form action="/todos/<%= todo._id %>?_method=PUT" method="post">
+                                    <input type="hidden" name="_method" value="PUT">
                                     <input type="text" name="text" value="<%= todo.text %>" required>
                                     <button type="submit">Save</button>
                                 </form>
                             <% } else { %>
                                 <button onclick="location.href='/todos/<%= todo._id %>/edit'">Edit</button>
-                                <button onclick="location.href='/todos/<%= todo._id %>/toggle'">Toggle Complete</button>
+                                <button class="toggle-complete" data-todoid="<%= todo._id %>" onclick="toggleComplete(this)">Toggle Complete</button>
                             <% } %>
                         </div>
                     </div>
@@ -154,5 +141,18 @@
         <a href="https://github.com/sabayneh1" target="_blank">GitHub</a> |
         <a href="https://www.linkedin.com/in/samanderabayneh/" target="_blank">LinkedIn</a>
     </footer>
+    <script>
+        function toggleComplete(button) {
+            const todoId = button.getAttribute('data-todoid');
+            fetch(`/todos/${todoId}/toggle`, { method: 'GET' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.completed) {
+                    button.closest('li').remove(); // Remove the todo item from the list
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
 </body>
 </html>
