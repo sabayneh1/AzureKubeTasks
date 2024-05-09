@@ -1,99 +1,3 @@
-
-# version: '3.3'
-
-# services:
-#   user-service:
-#     build:
-#       context: ./user-service
-#       dockerfile: Dockerfile
-#     ports:
-#       - "3002:3002"
-#     environment:
-#       - MONGO_URI=mongodb://admin:1234@mongo:27017/userService?authSource=admin
-#     depends_on:
-#       - mongo
-#     networks:
-#       - backend
-#     healthcheck:
-#       test: ["CMD", "curl", "-f", "http://localhost:3002/health"]
-#       interval: 30s
-#       timeout: 10s
-#       retries: 3
-
-#   todo-service:
-#     build:
-#       context: ./ToDo-service
-#       dockerfile: Dockerfile
-#     volumes:
-#       - ./todo-service:/usr/src/app
-#       - /usr/src/app/node_modules
-#     ports:
-#       - "3003:3003"  # Expose todo-service directly on port 3003
-#     environment:
-#       - MONGO_URI=mongodb://admin:1234@mongo:27017/todoService?authSource=admin
-#     depends_on:
-#       - mongo
-#     networks:
-#       - backend
-#     healthcheck:
-#       test: ["CMD", "curl", "-f", "http://localhost:3003/health"]
-#       interval: 30s
-#       timeout: 10s
-#       retries: 3
-
-#   notification-service:
-#     build:
-#       context: ./Notification-service
-#       dockerfile: Dockerfile
-#     ports:
-#       - "3004:3004"  # Expose notification-service directly on port 3004
-#     environment:
-#       - MONGO_URI=mongodb://admin:1234@mongo:27017/admin
-#     depends_on:
-#       - user-service
-#     networks:
-#       - backend
-#     healthcheck:
-#       test: ["CMD", "curl", "-f", "http://localhost:3004/health"]
-#       interval: 30s
-#       timeout: 10s
-#       retries: 3
-
-#   mongo:
-#     build:
-#       context: .
-#       dockerfile: Dockerfile-mongo
-#     ports:
-#       - "27017:27017"
-#     volumes:
-#       - mongo-data:/data/db
-#     environment:
-#       - MONGO_INITDB_ROOT_USERNAME=admin
-#       - MONGO_INITDB_ROOT_PASSWORD=1234
-#     networks:
-#       - backend
-
-#   mongo-shell:
-#     image: mongo:4.4
-#     networks:
-#       - backend
-#     entrypoint: ["tail"]
-#     command: ["-f", "/dev/null"]
-
-# volumes:
-#   mongo-data:
-
-# networks:
-#   backend:
-#     driver: bridge
-
-
-
-
-
-
-
-
 version: '3.3'
 
 services:
@@ -125,7 +29,7 @@ services:
     networks:
       - backend
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      test: ["CMD", "curl", "-f", " http://user_service:3000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -146,7 +50,7 @@ services:
     networks:
       - backend
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      test: ["CMD", "curl", "-f", "http://todo_service:3000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -164,7 +68,7 @@ services:
     networks:
       - backend
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      test: ["CMD", "curl", "-f", "http://notification_service:3000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
