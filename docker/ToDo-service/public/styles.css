@@ -1,16 +1,95 @@
 /* public/styles.css */
 body {
-    font-family: Arial, sans-serif;
-  }
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f4f9;
+  color: #333;
+  margin: 0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  font-size: 16px;
+}
 
-  ul {
-    list-style-type: none;
-  }
+h1 {
+  color: #4a47a3;
+}
 
-  li {
-    margin: 5px 0;
-  }
+ul {
+  list-style-type: none;
+  padding: 0;
+  width: 100%;
+  max-width: 600px;
+}
 
-  input[type="text"] {
-    margin-right: 10px;
-  }
+li {
+  background-color: #fff;
+  margin: 10px 0;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+}
+
+form {
+  margin-top: 10px;
+}
+
+input[type="text"], input[type="text"]:focus {
+  border: 2px solid #4a47a3;
+  border-radius: 4px;
+  padding: 10px;
+  width: calc(100% - 22px);
+  outline: none;
+}
+
+button {
+  background-color: #4a47a3;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-right: 10px;
+}
+
+button:last-child {
+  margin-right: 0;
+}
+
+button:hover {
+  background-color: #3734a9;
+}
+
+input[type="checkbox"] {
+  transform: scale(1.5);
+  margin-right: 10px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+footer {
+  margin-top: auto;
+  font-size: 14px;
+  color: #666;
+}
+
+footer p {
+  text-align: center;
+}
+
+footer p.signature {
+  margin-top: 20px;
+  font-weight: bold;
+  color: #4a47a3;
+}

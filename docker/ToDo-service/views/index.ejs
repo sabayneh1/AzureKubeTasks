@@ -4,22 +4,155 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ToDo List</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            font-size: 16px;
+        }
+
+        h1 {
+            color: #4a47a3;
+        }
+
+        form.add-todo, form.add-comment {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"], input[type="text"]:focus {
+            border: 2px solid #4a47a3;
+            border-radius: 4px;
+            padding: 10px;
+            flex-grow: 1;
+            margin-right: 10px;
+            outline: none;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        li {
+            background-color: #fff;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .todo-content, .button-group, .comment-section {
+            margin-bottom: 10px; /* Added margin to separate sections within the list item */
+        }
+
+        .todo-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            background-color: #4a47a3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #3734a9;
+        }
+
+        .comment-section {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        footer {
+            margin-top: auto;
+            font-size: 14px;
+            color: #666;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        footer a {
+            color: #4a47a3;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <h1>ToDo List</h1>
-    <form action="/todos" method="post">
+    <form action="/todos" method="post" class="add-todo">
         <input type="text" name="text" placeholder="Add new todo" required>
-        <input type="checkbox" name="completed">
         <button type="submit">Add ToDo</button>
     </form>
     <ul>
         <% if (todos && todos.length > 0) { %>
             <% todos.forEach(function(todo) { %>
-                <li><%= todo.text %> - <%= todo.completed ? 'Completed' : 'Pending' %></li>
+                <li>
+                    <div class="todo-content">
+                        <span><%= todo.text %> - <%= todo.completed ? 'Completed' : 'Pending' %></span>
+                        <div class="button-group">
+                            <% if(todo.editing) { %>
+                                <form action="/todos/<%= todo._id %>?_method=PUT" method="post">
+                                    <input type="text" name="text" value="<%= todo.text %>" required>
+                                    <button type="submit">Save</button>
+                                </form>
+                            <% } else { %>
+                                <button onclick="location.href='/todos/<%= todo._id %>/edit'">Edit</button>
+                                <button onclick="location.href='/todos/<%= todo._id %>/toggle'">Toggle Complete</button>
+                            <% } %>
+                        </div>
+                    </div>
+                    <form action="/todos/<%= todo._id %>/comment" method="post" class="add-comment">
+                        <input type="text" name="comment" placeholder="Add a comment" required>
+                        <button type="submit">Add Comment</button>
+                    </form>
+                    <div>Comments:</div>
+                    <ul>
+                        <% todo.comments.forEach(function(comment) { %>
+                            <li><%= comment %></li>
+                        <% }) %>
+                    </ul>
+                </li>
             <% }); %>
         <% } else { %>
             <li>No todos to display.</li>
         <% } %>
     </ul>
+    <footer>
+        <p>Created by Samander, DevOps Engineer</p>
+        <a href="https://github.com/sabayneh1" target="_blank">GitHub</a> |
+        <a href="https://www.linkedin.com/in/samanderabayneh/" target="_blank">LinkedIn</a>
+    </footer>
 </body>
 </html>
