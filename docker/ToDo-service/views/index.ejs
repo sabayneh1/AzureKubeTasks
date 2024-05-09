@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToDo List</title>
+</head>
+<body>
+    <h1>ToDo List</h1>
+    <form action="/todos" method="post">
+        <input type="text" name="text" placeholder="Add new todo" required>
+        <input type="checkbox" name="completed">
+        <button type="submit">Add ToDo</button>
+    </form>
+    <ul>
+        <% if (todos && todos.length > 0) { %>
+            <% todos.forEach(function(todo) { %>
+                <li><%= todo.text %> - <%= todo.completed ? 'Completed' : 'Pending' %></li>
+            <% }); %>
+        <% } else { %>
+            <li>No todos to display.</li>
+        <% } %>
+    </ul>
+</body>
+</html>

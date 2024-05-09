@@ -1,0 +1,16 @@
+/* public/styles.css */
+body {
+    font-family: Arial, sans-serif;
+  }
+
+  ul {
+    list-style-type: none;
+  }
+
+  li {
+    margin: 5px 0;
+  }
+
+  input[type="text"] {
+    margin-right: 10px;
+  }

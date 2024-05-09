@@ -4,6 +4,12 @@ FROM node:14-slim
 # Set the working directory in the container
 WORKDIR /usr/src/app
 
+# Install build tools to compile native dependencies and utilities like curl
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    python \
+    curl
+
 # Install build tools to compile native dependencies
 RUN apt-get update && apt-get install -y build-essential python
 

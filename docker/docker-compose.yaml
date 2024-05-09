@@ -1,4 +1,100 @@
-version: '3.8'  # Ensures compatibility with newer Docker features
+
+# version: '3.3'
+
+# services:
+#   user-service:
+#     build:
+#       context: ./user-service
+#       dockerfile: Dockerfile
+#     ports:
+#       - "3002:3002"
+#     environment:
+#       - MONGO_URI=mongodb://admin:1234@mongo:27017/userService?authSource=admin
+#     depends_on:
+#       - mongo
+#     networks:
+#       - backend
+#     healthcheck:
+#       test: ["CMD", "curl", "-f", "http://localhost:3002/health"]
+#       interval: 30s
+#       timeout: 10s
+#       retries: 3
+
+#   todo-service:
+#     build:
+#       context: ./ToDo-service
+#       dockerfile: Dockerfile
+#     volumes:
+#       - ./todo-service:/usr/src/app
+#       - /usr/src/app/node_modules
+#     ports:
+#       - "3003:3003"  # Expose todo-service directly on port 3003
+#     environment:
+#       - MONGO_URI=mongodb://admin:1234@mongo:27017/todoService?authSource=admin
+#     depends_on:
+#       - mongo
+#     networks:
+#       - backend
+#     healthcheck:
+#       test: ["CMD", "curl", "-f", "http://localhost:3003/health"]
+#       interval: 30s
+#       timeout: 10s
+#       retries: 3
+
+#   notification-service:
+#     build:
+#       context: ./Notification-service
+#       dockerfile: Dockerfile
+#     ports:
+#       - "3004:3004"  # Expose notification-service directly on port 3004
+#     environment:
+#       - MONGO_URI=mongodb://admin:1234@mongo:27017/admin
+#     depends_on:
+#       - user-service
+#     networks:
+#       - backend
+#     healthcheck:
+#       test: ["CMD", "curl", "-f", "http://localhost:3004/health"]
+#       interval: 30s
+#       timeout: 10s
+#       retries: 3
+
+#   mongo:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile-mongo
+#     ports:
+#       - "27017:27017"
+#     volumes:
+#       - mongo-data:/data/db
+#     environment:
+#       - MONGO_INITDB_ROOT_USERNAME=admin
+#       - MONGO_INITDB_ROOT_PASSWORD=1234
+#     networks:
+#       - backend
+
+#   mongo-shell:
+#     image: mongo:4.4
+#     networks:
+#       - backend
+#     entrypoint: ["tail"]
+#     command: ["-f", "/dev/null"]
+
+# volumes:
+#   mongo-data:
+
+# networks:
+#   backend:
+#     driver: bridge
+
+
+
+
+
+
+
+
+version: '3.3'
 
 services:
   nginx:
@@ -20,9 +116,10 @@ services:
       context: ./user-service
       dockerfile: Dockerfile
     ports:
-      - "3002:3000"
+      - "3002:3002"
     environment:
-      - MONGO_URI=mongodb://mongo:27017/userService
+      - MONGO_URI=mongodb://admin:1234@mongo:27017/userService?authSource=admin
+
     depends_on:
       - mongo
     networks:
@@ -35,12 +132,15 @@ services:
 
   todo-service:
     build:
-      context: ./todo-service
+      context: ./ToDo-service
       dockerfile: Dockerfile
+    volumes:
+      - ./todo-service:/usr/src/app
+      - /usr/src/app/node_modules
     ports:
-      - "3003:3000"
+      - "3003:3003"
     environment:
-      - MONGO_URI=mongodb://mongo:27017/todoService
+      - MONGO_URI=mongodb://admin:1234@mongo:27017/todoService?authSource=admin
     depends_on:
       - mongo
     networks:
@@ -53,12 +153,14 @@ services:
 
   notification-service:
     build:
-      context: ./notification-service
+      context: ./Notification-service
       dockerfile: Dockerfile
     ports:
-      - "3004:3000"
+      - "3004:3004"
+    environment:
+      - MONGO_URI=mongodb://admin:1234@mongo:27017/admin
     depends_on:
-      - user-service  # Assuming notifications might depend on user data
+      - user-service
     networks:
       - backend
     healthcheck:
@@ -68,13 +170,29 @@ services:
       retries: 3
 
   mongo:
-    image: mongo
+    build:
+      context: .
+      dockerfile: Dockerfile-mongo
     ports:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
+
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=1234
     networks:
       - backend
+
+  mongo-shell:
+    image: mongo:4.4
+    networks:
+      - backend
+    entrypoint: ["tail"]
+    command: ["-f", "/dev/null"]
+#docker-compose run --rm --entrypoint mongo mongo-shell -u admin -p 1234 --authenticationDatabase admin mongo:27017
+
+
 
 volumes:
   mongo-data:

@@ -1,40 +1,55 @@
 const express = require('express');
+const path = require('path');
 const mongoose = require('mongoose');
 const ToDo = require('./models/ToDo');
-const { errorHandler, asyncHandler } = require('./middlewares');
+const { asyncHandler } = require('./middlewares');
 require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3003;
 
-app.use(express.json());
-
-// MongoDB Connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/todoService', {
+mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
-}).then(() => console.log("MongoDB connected"))
-  .catch(err => console.error("MongoDB connection error:", err));
+}).then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('MongoDB connection error:', err));
 
-// Get all ToDo items
-app.get('/', asyncHandler(async (req, res) => {
+app.use(express.static(path.join(__dirname, 'public')));
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Root route
+app.get('/', (req, res) => {
+  res.redirect('/todos');
+});
+
+// Enhanced error handling middleware, moved to a correct position in code.
+const errorHandler = (err, req, res, next) => {
+  console.error('Error status:', err.status);
+  console.error('Error message:', err.message);
+  console.error('Error stack:', err.stack);
+  res.status(err.status || 500).send({
+    error: 'Internal Server Error',
+    message: err.message,
+    stack: process.env.NODE_ENV === 'development' ? err.stack : '🔒'
+  });
+};
+
+// Route handlers with detailed error logging
+app.get('/todos', asyncHandler(async (req, res, next) => {
   const todos = await ToDo.find();
-  res.send(todos);
+  res.render('index', { todos });
 }));
 
-// Add a new ToDo item
-app.post('/', asyncHandler(async (req, res) => {
-  const { text, completed } = req.body;
-  if (typeof text !== 'string' || typeof completed !== 'boolean') {
-    res.status(400).send("Invalid input data.");
-    return;
-  }
+app.post('/todos', asyncHandler(async (req, res, next) => {
+  const { text, completed = false } = req.body;
   const todo = new ToDo({ text, completed });
   await todo.save();
-  res.status(201).send(todo);
+  res.redirect('/todos');
 }));
 
-// Health check route
 app.get('/health', (req, res) => {
   res.status(200).send('OK');
 });

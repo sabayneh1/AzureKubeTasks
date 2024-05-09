@@ -7,10 +7,16 @@ const port = process.env.PORT || 3004;
 app.use(express.json());
 
 // MongoDB Connection
-mongoose.connect('mongodb://localhost/notificationService', {
+// mongoose.connect('mongodb://localhost/notificationService', {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true
+// });
+
+mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
-});
+}).then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('MongoDB connection error:', err));
 
 // Register notification preferences
 app.post('/register', async (req, res) => {

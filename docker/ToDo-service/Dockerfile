@@ -4,6 +4,12 @@ FROM node:14
 # Set the working directory in the container
 WORKDIR /usr/src/app
 
+# Install build tools to compile native dependencies and utilities like curl
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    python \
+    curl
+
 # Copy package.json and package-lock.json (if available)
 COPY package*.json ./
 
