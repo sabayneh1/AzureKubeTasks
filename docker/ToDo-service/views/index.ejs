@@ -93,6 +93,13 @@
         footer a:hover {
             text-decoration: underline;
         }
+        .logout-button {
+            margin-top: 20px;
+            background-color: #d9534f;
+        }
+        .logout-button:hover {
+            background-color: #c9302c;
+        }
     </style>
 </head>
 <body>
@@ -136,6 +143,7 @@
             <li>No todos to display.</li>
         <% } %>
     </ul>
+    <button class="logout-button" onclick="location.href='/logout'">Logout</button>
     <footer>
         <p>Created by Samander, DevOps Engineer</p>
         <a href="https://github.com/sabayneh1" target="_blank">GitHub</a> |
