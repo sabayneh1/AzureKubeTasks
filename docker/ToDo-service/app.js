@@ -2,8 +2,9 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 const ToDo = require('./models/ToDo');
+const { asyncHandler, authenticateJWT, errorHandler } = require('./middlewares');
 const methodOverride = require('method-override');
-const { asyncHandler } = require('./middlewares');
+const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
 const app = express();
@@ -20,7 +21,11 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(methodOverride('_method'));  // Corrected from '__method' to '_method'
+app.use(methodOverride('_method'));
+app.use(cookieParser());
+
+// Middleware to check authentication for protected routes
+app.use('/todos', authenticateJWT);
 
 // Root route
 app.get('/', (req, res) => {
@@ -29,27 +34,37 @@ app.get('/', (req, res) => {
 
 // Route handlers
 app.get('/todos', asyncHandler(async (req, res, next) => {
-  const todos = await ToDo.find({ completed: false });  // Only fetch incomplete todos
+  const todos = await ToDo.find({ user: req.user.userId, completed: false });
   res.render('index', { todos });
 }));
 
 app.post('/todos', asyncHandler(async (req, res, next) => {
   const { text, completed = false } = req.body;
-  const todo = new ToDo({ text, completed });
+  const todo = new ToDo({
+    text,
+    completed,
+    user: req.user.userId
+  });
   await todo.save();
   res.redirect('/todos');
 }));
 
 app.get('/todos/:id/toggle', asyncHandler(async (req, res) => {
   const todo = await ToDo.findById(req.params.id);
+  if (todo.user.toString() !== req.user.userId) {
+    return res.status(403).send('Forbidden');
+  }
   todo.completed = !todo.completed;
   await todo.save();
-  res.json({ completed: todo.completed }); // Send JSON response for dynamic UI updates
+  res.json({ completed: todo.completed });
 }));
 
 app.get('/todos/:id/edit', asyncHandler(async (req, res) => {
-  const todos = await ToDo.find();
+  const todos = await ToDo.find({ user: req.user.userId });
   todos.forEach(todo => {
+    if (todo.user.toString() !== req.user.userId) {
+      return res.status(403).send('Forbidden');
+    }
     todo.editing = todo.id === req.params.id;
   });
   res.render('index', { todos });
@@ -57,38 +72,47 @@ app.get('/todos/:id/edit', asyncHandler(async (req, res) => {
 
 app.put('/todos/:id', asyncHandler(async (req, res) => {
   const { text } = req.body;
-  await ToDo.findByIdAndUpdate(req.params.id, { text });
+  const todo = await ToDo.findById(req.params.id);
+  if (todo.user.toString() !== req.user.userId) {
+    return res.status(403).send('Forbidden');
+  }
+  todo.text = text;
+  await todo.save();
   res.redirect('/todos');
 }));
 
 app.post('/todos/:id/comment', asyncHandler(async (req, res) => {
   const { comment } = req.body;
   const todo = await ToDo.findById(req.params.id);
+  if (todo.user.toString() !== req.user.userId) {
+    return res.status(403).send('Forbidden');
+  }
   todo.comments = todo.comments || [];
   todo.comments.push(comment);
   await todo.save();
   res.redirect('/todos');
 }));
 
+// for the notification services 
+
+// Logout route
+app.get('/logout', (req, res) => {
+  res.clearCookie('token'); // Clear the authentication token cookie
+  res.redirect('/users/login'); // Redirect to the login page
+});
+
+
 app.get('/health', (req, res) => {
   res.status(200).send('OK');
 });
 
 // Error handling middleware
-const errorHandler = (err, req, res, next) => {
-  console.error('Error:', err);
-  res.status(err.status, 500).send({
-    error: 'Internal Server Error',
-    message: err.message,
-    stack: process.env.NODE_ENV === 'development' ? err.stack : '🔒'
-  });
-};
 app.use(errorHandler);
 
 // Start the server
 if (process.env.NODE_ENV !== 'test') {
   app.listen(port, () => {
-    console.log(`User service listening on port ${port}`);
+    console.log(`Todo service listening on port ${port}`);
   });
 }
 
