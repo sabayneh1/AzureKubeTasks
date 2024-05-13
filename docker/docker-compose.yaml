@@ -23,6 +23,7 @@ services:
       - "3002:3002"
     environment:
       - MONGO_URI=mongodb://admin:1234@mongo:27017/userService?authSource=admin
+      - JWT_SECRET=your_jwt_secret
 
     depends_on:
       - mongo
@@ -45,6 +46,7 @@ services:
       - "3003:3003"
     environment:
       - MONGO_URI=mongodb://admin:1234@mongo:27017/todoService?authSource=admin
+      - JWT_SECRET=your_jwt_secret
     depends_on:
       - mongo
     networks:
@@ -63,6 +65,8 @@ services:
       - "3004:3004"
     environment:
       - MONGO_URI=mongodb://admin:1234@mongo:27017/admin
+      - EMAIL_USER=your-email@gmail.com
+      - EMAIL_PASS=your-email-password
     depends_on:
       - user-service
     networks:
