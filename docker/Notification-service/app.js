@@ -1,22 +1,30 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const nodemailer = require('nodemailer');
+const axios = require('axios');
+require('dotenv').config();
+
 const Notification = require('./models/Notification');
 const app = express();
 const port = process.env.PORT || 3004;
 
 app.use(express.json());
 
-// MongoDB Connection
-// mongoose.connect('mongodb://localhost/notificationService', {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true
-// });
-
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
+
+const transporter = nodemailer.createTransport({
+  host: process.env.EMAIL_HOST,
+  port: parseInt(process.env.EMAIL_PORT, 10),
+  secure: true, // Use TLS
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
 
 // Register notification preferences
 app.post('/register', async (req, res) => {
@@ -30,15 +38,27 @@ app.post('/register', async (req, res) => {
   }
 });
 
-// Send a notification (simulated)
+// Send a notification
 app.post('/send', async (req, res) => {
   try {
-    const { userId, message } = req.body;
-    // Here you would integrate with an external service to actually send the notification
-    console.log(`Sending notification to user ${userId}: ${message}`);
+    const { email, message } = req.body;
+
+    console.log('Received request to send notification to:', email, 'Message:', message);
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'Todo Notification',
+      text: message
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+
+    console.log('Email sent:', info.response);
     res.status(200).send({ message: 'Notification sent successfully!' });
   } catch (error) {
-    res.status(500).send(error.message);
+    console.error('Error processing notification request:', error.message);
+    res.status(500).send({ error: 'Internal Server Error' });
   }
 });
 
