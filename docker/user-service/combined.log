@@ -1,0 +1,29 @@
+2024-05-14T22:55:55.302Z [32minfo[39m: User service listening on port 3002
+2024-05-14T23:03:47.700Z [32minfo[39m: Fetching user with ID: 6642d8b184f36c6dd25df23e
+2024-05-14T23:03:47.722Z [32minfo[39m: User email fetched: samanderg@hotmail.com
+2024-05-14T23:03:47.759Z [32minfo[39m: Fetching user with ID: undefined
+2024-05-14T23:03:47.762Z [31merror[39m: Error fetching user email: CastError: Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "User"
+2024-05-14T23:09:43.297Z [32minfo[39m: User service listening on port 3002
+2024-05-14T23:11:48.629Z [32minfo[39m: Fetching user with ID: 6642d8b184f36c6dd25df23e
+2024-05-14T23:11:48.643Z [32minfo[39m: User email fetched: samanderg@hotmail.com
+2024-05-14T23:11:48.675Z [32minfo[39m: Fetching user with ID: undefined
+2024-05-14T23:11:48.677Z [31merror[39m: Error fetching user email: CastError: Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "User"
+2024-05-14T23:16:27.983Z [32minfo[39m: User service listening on port 3002
+2024-05-14T23:17:24.278Z [32minfo[39m: Fetching user with ID: 6642d8b184f36c6dd25df23e
+2024-05-14T23:17:24.296Z [32minfo[39m: User email fetched: samanderg@hotmail.com
+2024-05-14T23:28:44.167Z [32minfo[39m: User service listening on port 3002
+2024-05-14T23:29:25.279Z [32minfo[39m: Fetching user with ID: 6642d8b184f36c6dd25df23e
+2024-05-14T23:29:25.296Z [32minfo[39m: User email fetched: samanderg@hotmail.com
+2024-05-14T23:34:52.500Z [32minfo[39m: Login attempt: samander
+2024-05-14T23:34:52.504Z [32minfo[39m: User found: samander
+2024-05-14T23:34:52.612Z [32minfo[39m: Password match: true
+2024-05-14T23:34:52.613Z [32minfo[39m: User authenticated successfully: samander
+2024-05-14T23:35:14.964Z [32minfo[39m: Fetching user with ID: 6643f511f7b08565ef1f6421
+2024-05-14T23:35:14.968Z [32minfo[39m: User email fetched: samgtest0429@gmail.com
+2024-05-14T23:42:15.344Z [32minfo[39m: Fetching user with ID: 6643f511f7b08565ef1f6421
+2024-05-14T23:42:15.347Z [32minfo[39m: User email fetched: samgtest0429@gmail.com
+2024-05-14T23:47:16.215Z [32minfo[39m: User service listening on port 3002
+2024-05-14T23:48:48.209Z [32minfo[39m: User service listening on port 3002
+2024-05-14T23:49:01.883Z [32minfo[39m: Fetching user with ID: 6643f511f7b08565ef1f6421
+2024-05-14T23:49:01.899Z [32minfo[39m: User email fetched: samgtest0429@gmail.com
+2024-05-17T00:25:38.341Z [32minfo[39m: User service listening on port 3002
