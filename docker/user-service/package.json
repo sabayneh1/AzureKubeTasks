@@ -16,7 +16,9 @@
     "bcryptjs": "^2.4.3",
     "jsonwebtoken": "^8.5.1",
     "method-override": "^3.0.0",
-    "cookie-parser": "^1.4.5"
+    "cookie-parser": "^1.4.5",
+    "morgan": "^1.10.0",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "eslint": "^7.32.0",
