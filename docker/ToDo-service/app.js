@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
+const axios = require('axios');
 const ToDo = require('./models/ToDo');
 const { asyncHandler, authenticateJWT, errorHandler } = require('./middlewares');
 const methodOverride = require('method-override');
@@ -56,51 +57,40 @@ app.get('/todos/:id/toggle', asyncHandler(async (req, res) => {
   }
   todo.completed = !todo.completed;
   await todo.save();
+
+  // Logging userId and todo for debugging
+  console.log('Toggling todo:', todo);
+  console.log('User ID:', req.user.userId);
+
+  try {
+    // Fetch user's email from the user service
+    const userResponse = await axios.get(`http://user-service:3002/users/${req.user.userId}`);
+    const userEmail = userResponse.data.email;
+
+    // Logging fetched email
+    console.log('Fetched user email:', userEmail);
+
+    // Send notification
+    const message = `Your todo "${todo.text}" has been marked as ${todo.completed ? 'completed' : 'incomplete'}.`;
+    const notificationResponse = await axios.post('http://notification-service:3004/send', {
+      email: userEmail,
+      message: message
+    });
+
+    // Logging notification response
+    console.log('Notification response:', notificationResponse.data);
+  } catch (error) {
+    console.error('Error sending notification:', error.message);
+  }
+
   res.json({ completed: todo.completed });
 }));
-
-app.get('/todos/:id/edit', asyncHandler(async (req, res) => {
-  const todos = await ToDo.find({ user: req.user.userId });
-  todos.forEach(todo => {
-    if (todo.user.toString() !== req.user.userId) {
-      return res.status(403).send('Forbidden');
-    }
-    todo.editing = todo.id === req.params.id;
-  });
-  res.render('index', { todos });
-}));
-
-app.put('/todos/:id', asyncHandler(async (req, res) => {
-  const { text } = req.body;
-  const todo = await ToDo.findById(req.params.id);
-  if (todo.user.toString() !== req.user.userId) {
-    return res.status(403).send('Forbidden');
-  }
-  todo.text = text;
-  await todo.save();
-  res.redirect('/todos');
-}));
-
-app.post('/todos/:id/comment', asyncHandler(async (req, res) => {
-  const { comment } = req.body;
-  const todo = await ToDo.findById(req.params.id);
-  if (todo.user.toString() !== req.user.userId) {
-    return res.status(403).send('Forbidden');
-  }
-  todo.comments = todo.comments || [];
-  todo.comments.push(comment);
-  await todo.save();
-  res.redirect('/todos');
-}));
-
-// for the notification services 
 
 // Logout route
 app.get('/logout', (req, res) => {
   res.clearCookie('token'); // Clear the authentication token cookie
   res.redirect('/users/login'); // Redirect to the login page
 });
-
 
 app.get('/health', (req, res) => {
   res.status(200).send('OK');
