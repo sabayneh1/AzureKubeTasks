@@ -15,7 +15,8 @@
     "ejs": "^3.1.8",
     "method-override": "^3.0.0",
     "jsonwebtoken": "^8.5.1",
-    "cookie-parser": "^1.4.5"
+    "cookie-parser": "^1.4.5",
+    "axios": "^0.21.1"
   },
   "devDependencies": {
     "eslint": "^7.32.0",
