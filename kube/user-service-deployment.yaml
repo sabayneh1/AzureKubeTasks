@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+  labels:
+    app: user-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+      labels:
+        app: user-service
+    spec:
+      containers:
+        - name: user-service
+          image: sabayneh/user-service:latest
+          ports:
+            - containerPort: 3002
+          env:
+            - name: MONGO_URI
+              value: "mongodb://mongo:27017/userService"
+            - name: JWT_SECRET
+              value: "your_jwt_secret"  
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "150m"
+        - name: log-sidecar
+          image: fluentd:latest
+          volumeMounts:
+            - name: varlog
+              mountPath: /var/log
+          resources:
+            limits:
+              cpu: 250m
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+      volumes:
+        - name: varlog
+          emptyDir: {}
