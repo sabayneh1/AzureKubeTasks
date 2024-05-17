@@ -65,8 +65,10 @@ services:
       - "3004:3004"
     environment:
       - MONGO_URI=mongodb://admin:1234@mongo:27017/admin
-      - EMAIL_USER=your-email@gmail.com
-      - EMAIL_PASS=your-email-password
+      - EMAIL_USER=JHDmMQSFbLvbMojcCD7443miO1Byn6wF
+      - EMAIL_PASS=PocdqfaxpBoZYfzqssKCRpWzTDsXMLMX
+      - EMAIL_HOST=mailslurp.mx
+      - EMAIL_PORT=2465
     depends_on:
       - user-service
     networks:
