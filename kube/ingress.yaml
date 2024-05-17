@@ -4,6 +4,8 @@ metadata:
   name: main-ingress
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/affinity: cookie
+    nginx.ingress.kubernetes.io/session-cookie-name: "route"
 spec:
   ingressClassName: nginx
   rules:
