@@ -9,10 +9,10 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 3002
-      nodePort: 30002 # Same as targetPort
-  type: NodePort
+  type: ClusterIP
 
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
@@ -24,8 +24,8 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 3003
-      nodePort: 30003 # Same as targetPort
-  type: NodePort
+  type: ClusterIP
+
 
 
 ---
@@ -40,6 +40,5 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 3004
-      nodePort: 30004 # Same as targetPort
-  type: NodePort
+  type: ClusterIP
 
