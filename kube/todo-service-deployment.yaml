@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-service
+  labels:
+    app: todo-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo-service
+  template:
+    metadata:
+      labels:
+        app: todo-service
+    spec:
+      containers:
+        - name: todo-service
+          image: sabayneh/todo-service:latest
+          ports:
+            - containerPort: 3003
+          env:
+            - name: MONGO_URI
+              value: "mongodb://mongo:27017/todoService"
+            - name: JWT_SECRET
+              value: "your_jwt_secret"  # Update this with your actual JWT secret
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "150m"
