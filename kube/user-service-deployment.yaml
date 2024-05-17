@@ -23,7 +23,7 @@ spec:
             - name: MONGO_URI
               value: "mongodb://mongo:27017/userService"
             - name: JWT_SECRET
-              value: "your_jwt_secret"  
+              value: "samander's_jwt_secret"
           resources:
             requests:
               memory: "128Mi"
