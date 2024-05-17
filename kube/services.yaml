@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+spec:
+  selector:
+    app: user-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3002
+      nodePort: 30002 # Same as targetPort
+  type: NodePort
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: todo-service
+spec:
+  selector:
+    app: todo-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3003
+      nodePort: 30003 # Same as targetPort
+  type: NodePort
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: notification-service
+spec:
+  selector:
+    app: notification-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3004
+      nodePort: 30004 # Same as targetPort
+  type: NodePort
+
