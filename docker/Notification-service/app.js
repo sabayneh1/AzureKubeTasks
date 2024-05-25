@@ -1,7 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const nodemailer = require('nodemailer');
-const axios = require('axios');
 require('dotenv').config();
 
 const Notification = require('./models/Notification');
@@ -10,11 +9,18 @@ const port = process.env.PORT || 3004;
 
 app.use(express.json());
 
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}).then(() => console.log('MongoDB connected'))
-  .catch(err => console.error('MongoDB connection error:', err));
+const connectToDatabase = (uri, serviceName) => {
+  const connection = mongoose.createConnection(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  });
+  connection.on('connected', () => console.log(`Connected to ${serviceName} MongoDB`));
+  connection.on('error', err => console.error(`${serviceName} MongoDB connection error:`, err));
+  return connection;
+};
+
+const todoServiceConnection = connectToDatabase(process.env.TODO_SERVICE_MONGO_URI, 'todoService');
+const userServiceConnection = connectToDatabase(process.env.USER_SERVICE_MONGO_URI, 'userService');
 
 const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST,
