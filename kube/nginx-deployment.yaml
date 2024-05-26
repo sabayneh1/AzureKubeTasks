@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        volumeMounts:
+        - name: nginx-config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+        resources:
+          limits:
+            cpu: "250m" # 250 millicores (0.25 CPU)
+            memory: "512Mi" # 512 Megabytes
+          requests:
+            cpu: "100m" # 100 millicores (0.1 CPU)
+            memory: "256Mi" # 256 Megabytes
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: nginx-config
