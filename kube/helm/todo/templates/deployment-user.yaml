@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+  labels:
+    app: user-service
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+      labels:
+        app: user-service
+    spec:
+      containers:
+        - name: user-service
+          image: "{{ .Values.image.repository }}/user-service:{{ .Values.image.tagUserService }}"
+          ports:
+            - containerPort: 3002
+          env:
+            - name: MONGO_URI
+              value: "{{ .Values.env.USER_SERVICE_MONGO_URI }}"
+            - name: JWT_SECRET
+              value: "{{ .Values.env.JWT_SECRET }}"
+          volumeMounts:
+            - name: varlog
+              mountPath: /var/log
+          resources:
+            requests:
+              memory: {{ .Values.resources.requests.memory }}
+              cpu: {{ .Values.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.resources.limits.memory }}
+              cpu: {{ .Values.resources.limits.cpu }}
+        - name: log-sidecar
+          image: "{{ .Values.image.repository }}/fluentd:{{ .Values.image.tagFluentd }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: varlog
+              mountPath: /var/log
+            - name: fluentd-config
+              mountPath: /fluentd/etc/fluent.conf
+              subPath: fluent.conf
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 100m
+            limits:
+              memory: 512Mi
+              cpu: 250m
+      volumes:
+        - name: varlog
+          emptyDir: {}
+        - name: fluentd-config
+          configMap:
+            name: fluentd-config
+            items:
+              - key: fluent.conf
+                path: fluent.conf
