@@ -16,16 +16,16 @@ spec:
     spec:
       containers:
         - name: kibana
-          image: docker.elastic.co/kibana/kibana:7.10.1
+          image: "{{ .Values.kibana.image.repository }}:{{ .Values.kibana.image.tag }}"
           ports:
             - containerPort: 5601
           env:
             - name: ELASTICSEARCH_HOSTS
-              value: http://elasticsearch:9200
+              value: "http://elasticsearch:9200"
           resources:
             requests:
-              memory: "128Mi"
-              cpu: "100m"
+              memory: "{{ .Values.kibana.resources.requests.memory }}"
+              cpu: "{{ .Values.kibana.resources.requests.cpu }}"
             limits:
-              memory: "256Mi"
-              cpu: "150m"
+              memory: "{{ .Values.kibana.resources.limits.memory }}"
+              cpu: "{{ .Values.kibana.resources.limits.cpu }}"
