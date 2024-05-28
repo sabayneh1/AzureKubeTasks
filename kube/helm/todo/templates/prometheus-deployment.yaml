@@ -1,3 +1,4 @@
+{{- if .Values.prometheus.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -16,13 +17,13 @@ spec:
     spec:
       containers:
         - name: prometheus
-          image: prom/prometheus:latest
+          image: "{{ .Values.prometheus.image.repository }}:{{ .Values.prometheus.image.tag }}"
           args:
             - '--config.file=/etc/prometheus/prometheus.yml'
             - '--storage.tsdb.path=/prometheus/'
             - '--web.console.libraries=/usr/share/prometheus/console_libraries'
             - '--web.console.templates=/usr/share/prometheus/consoles'
-            - '--web.external-url=http://20.48.171.161/prometheus/'
+            - '--web.external-url=http://{{ .Values.global.externalUrl }}/prometheus/'
             - '--web.route-prefix=/prometheus'
           ports:
             - containerPort: 9090
@@ -31,13 +32,19 @@ spec:
               mountPath: /prometheus
             - name: prometheus-config
               mountPath: /etc/prometheus
+          resources:
+            requests:
+              memory: "{{ .Values.prometheus.resources.requests.memory }}"
+              cpu: "{{ .Values.prometheus.resources.requests.cpu }}"
+            limits:
+              memory: "{{ .Values.prometheus.resources.limits.memory }}"
+              cpu: "{{ .Values.prometheus.resources.limits.cpu }}"
       volumes:
         - name: prometheus-storage
           emptyDir: {}
         - name: prometheus-config
           configMap:
             name: prometheus-config
-
 ---
 apiVersion: v1
 kind: Service
