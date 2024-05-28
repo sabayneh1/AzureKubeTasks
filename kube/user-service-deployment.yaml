@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: user-service
-          image: sabayneh/user-service:latest
+          image: sabayneh/user-service:v2
           ports:
             - containerPort: 3002
           env:
@@ -24,6 +24,9 @@ spec:
               value: "mongodb://mongo:27017/userService"
             - name: JWT_SECRET
               value: "samander's_jwt_secret"
+          volumeMounts:
+            - name: varlog
+              mountPath: /var/log
           resources:
             requests:
               memory: "128Mi"
@@ -32,10 +35,14 @@ spec:
               memory: "256Mi"
               cpu: "150m"
         - name: log-sidecar
-          image: fluentd:latest
+          image: sabayneh/fluentd:elasticsearch
+          imagePullPolicy: Always
           volumeMounts:
             - name: varlog
               mountPath: /var/log
+            - name: fluentd-config
+              mountPath: /fluentd/etc/fluent.conf
+              subPath: fluent.conf
           resources:
             limits:
               cpu: 250m
@@ -46,3 +53,9 @@ spec:
       volumes:
         - name: varlog
           emptyDir: {}
+        - name: fluentd-config
+          configMap:
+            name: fluentd-config
+            items:
+              - key: fluent.conf
+                path: fluent.conf
