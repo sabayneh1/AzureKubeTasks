@@ -26,17 +26,17 @@ spec:
               memory: "{{ .Values.prometheus.resources.limits.memory }}"
               cpu: "{{ .Values.prometheus.resources.limits.cpu }}"
           ports:
-            - containerPort: {{ .Values.prometheus.service.port }}
+            - containerPort: 9090
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: prometheus
 spec:
-  type: {{ .Values.prometheus.service.type }}
+  type: ClusterIP
   ports:
-    - port: {{ .Values.prometheus.service.port }}
-      targetPort: {{ .Values.prometheus.service.port }}
+    - port: 9090
+      targetPort: 9090
   selector:
     app: prometheus
 {{- end }}
