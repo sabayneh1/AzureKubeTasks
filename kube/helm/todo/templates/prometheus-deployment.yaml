@@ -1,7 +1,10 @@
+{{- if .Values.prometheus.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: prometheus
+  labels:
+    app: prometheus
 spec:
   replicas: 1
   selector:
@@ -14,13 +17,26 @@ spec:
     spec:
       containers:
         - name: prometheus
-          image: prom/prometheus:v2.28.1
-          ports:
-            - containerPort: 9090
+          image: "{{ .Values.prometheus.image.repository }}:{{ .Values.prometheus.image.tag }}"
           resources:
             requests:
-              memory: "512Mi"
-              cpu: "500m"
+              memory: "{{ .Values.prometheus.resources.requests.memory }}"
+              cpu: "{{ .Values.prometheus.resources.requests.cpu }}"
             limits:
-              memory: "1Gi"
-              cpu: "1000m"
+              memory: "{{ .Values.prometheus.resources.limits.memory }}"
+              cpu: "{{ .Values.prometheus.resources.limits.cpu }}"
+          ports:
+            - containerPort: {{ .Values.prometheus.service.port }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus
+spec:
+  type: {{ .Values.prometheus.service.type }}
+  ports:
+    - port: {{ .Values.prometheus.service.port }}
+      targetPort: {{ .Values.prometheus.service.port }}
+  selector:
+    app: prometheus
+{{- end }}
