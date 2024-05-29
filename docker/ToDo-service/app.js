@@ -86,6 +86,29 @@ app.get('/todos/:id/toggle', asyncHandler(async (req, res) => {
   res.json({ completed: todo.completed });
 }));
 
+app.get('/todos/:id/edit', asyncHandler(async (req, res) => {
+  const todos = await ToDo.find();
+  todos.forEach(todo => {
+    todo.editing = todo.id === req.params.id;
+  });
+  res.render('index', { todos });
+}));
+
+app.put('/todos/:id', asyncHandler(async (req, res) => {
+  const { text } = req.body;
+  await ToDo.findByIdAndUpdate(req.params.id, { text });
+  res.redirect('/todos');
+}));
+
+app.post('/todos/:id/comment', asyncHandler(async (req, res) => {
+  const { comment } = req.body;
+  const todo = await ToDo.findById(req.params.id);
+  todo.comments = todo.comments || [];
+  todo.comments.push(comment);
+  await todo.save();
+  res.redirect('/todos');
+}));
+
 // Logout route
 app.get('/logout', (req, res) => {
   res.clearCookie('token'); // Clear the authentication token cookie
