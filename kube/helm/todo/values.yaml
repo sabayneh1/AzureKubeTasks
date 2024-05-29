@@ -123,11 +123,11 @@ elasticsearch:
     tag: 7.10.1
   resources:
     requests:
-      memory: "512Mi"
-      cpu: "150m"
+      memory: "1gi"
+      cpu: "250m"
     limits:
-      memory: "1Gi"
-      cpu: "200m"
+      memory: "2Gi"
+      cpu: "400m"
 
 kibana:
   image:
