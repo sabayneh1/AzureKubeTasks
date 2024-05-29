@@ -16,9 +16,24 @@ spec:
     spec:
       containers:
         - name: notification-service
-          image: sabayneh/notification-service:latest
+          image: sabayneh/notification-service:v4
           ports:
             - containerPort: 3004
+          env:
+            - name: TODO_SERVICE_MONGO_URI
+              value: "mongodb://mongo:27017/todoService"
+            - name: USER_SERVICE_MONGO_URI
+              value: "mongodb://mongo:27017/userService"
+            - name: EMAIL_USER
+              value: "JHDmMQSFbLvbMojcCD7443miO1Byn6wF"
+            - name: EMAIL_PASS
+              value: "PocdqfaxpBoZYfzqssKCRpWzTDsXMLMX"
+            - name: EMAIL_HOST
+              value: "mailslurp.mx"
+            - name: EMAIL_PORT
+              value: "2465"
+            - name: JWT_SECRET
+              value: "samander's_jwt_secret"
           resources:
             requests:
               memory: "128Mi"
@@ -26,5 +41,15 @@ spec:
             limits:
               memory: "256Mi"
               cpu: "100m"
-      # nodeSelector:
-      #   kubernetes.io/hostname: node-3
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3004
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3004
+            initialDelaySeconds: 30
+            periodSeconds: 30
