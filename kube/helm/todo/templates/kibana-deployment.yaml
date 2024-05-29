@@ -26,6 +26,10 @@ spec:
           env:
             - name: ELASTICSEARCH_HOSTS
               value: "http://elasticsearch:9200"
+            - name: SERVER_BASEPATH
+              value: "/kibana"
+            - name: SERVER_REWRITEBASEPATH
+              value: "true"
           resources:
             requests:
               memory: "{{ .Values.kibana.resources.requests.memory }}"
@@ -33,8 +37,13 @@ spec:
             limits:
               memory: "{{ .Values.kibana.resources.limits.memory }}"
               cpu: "{{ .Values.kibana.resources.limits.cpu }}"
-
-
+          volumeMounts:
+            - name: kibana-storage
+              mountPath: /usr/share/kibana/data
+      volumes:
+        - name: kibana-storage
+          persistentVolumeClaim:
+            claimName: kibana-pvc
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
