@@ -8,7 +8,7 @@ data:
 
     http {
         upstream grafana {
-            server grafana.default.svc.cluster.local:3040;
+            server grafana.default.svc.cluster.local:3000;
         }
 
         upstream kibana {
