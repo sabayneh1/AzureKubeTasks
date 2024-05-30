@@ -9,4 +9,10 @@ spec:
     - protocol: TCP
       port: 5601
       targetPort: 5601
+    - protocol: TCP
+      port: 3040
+      targetPort: 3040
+    - protocol: TCP
+      port: 9090
+      targetPort: 9090
   type: LoadBalancer
