@@ -3,15 +3,52 @@ kind: CronJob
 metadata:
   name: data-backup
 spec:
-  schedule: "0 3 * * *"
+  schedule: "0 3 * * *"  # Runs at 3:00 AM every day
   jobTemplate:
     spec:
       template:
         spec:
           containers:
-            - name: backup
-              image: backup-image:latest
-              env:
-                - name: MONGO_URI
-                  value: "mongodb://mongo:27017"
+          - name: backup
+            image: restic/restic:latest
+            volumeMounts:
+            - name: backup-storage
+              mountPath: /backup  # Mount point for Restic repository
+            env:
+            - name: RESTIC_REPOSITORY
+              value: "/backup"  # Use the mounted path in the PVC
+          volumes:
+          - name: backup-storage
+            persistentVolumeClaim:
+              claimName: backup-pvc  # Using the PVC created
           restartPolicy: OnFailure
+
+
+
+
+
+# apiVersion: batch/v1
+# kind: CronJob
+# metadata:
+#   name: data-backup
+# spec:
+#   schedule: "0 3 * * *"  # Runs at 3:00 AM every day
+#   jobTemplate:
+#     spec:
+#       template:
+#         spec:
+#           containers:
+#           - name: backup
+#             image: restic/restic:latest
+#             volumeMounts:
+#             - name: backup-storage
+#               mountPath: /backup  # Mount point for Restic repository
+#             env:
+#             - name: RESTIC_REPOSITORY  # Environment variable for Restic repository
+#               value: "s3://your-bucket-name"  # Replace with your storage location (e.g., S3 bucket)
+#           volumes:
+#           - name: backup-storage  # Persistent volume claim for backup data
+#             persistentVolumeClaim:
+#               claimName: backup-pvc  # Replace with your PVC name
+
+#           restartPolicy: OnFailure
