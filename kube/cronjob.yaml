@@ -20,7 +20,7 @@ spec:
           volumes:
           - name: backup-storage
             persistentVolumeClaim:
-              claimName: backup-pvc  # Using the PVC created
+              claimName: backup-pvc-helm  # Using the PVC created
           restartPolicy: OnFailure
 
 
