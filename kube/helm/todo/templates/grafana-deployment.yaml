@@ -1,7 +1,10 @@
+{{- if .Values.grafana.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: grafana
+  labels:
+    app: grafana
 spec:
   replicas: 1
   selector:
@@ -14,18 +17,31 @@ spec:
     spec:
       containers:
         - name: grafana
-          image: grafana/grafana:8.3.0
-          ports:
-            - containerPort: 3040
-          env:
-            - name: GF_SECURITY_ADMIN_USER
-              value: admin
-            - name: GF_SECURITY_ADMIN_PASSWORD
-              value: "strongPassword"
+          image: "{{ .Values.grafana.image.repository }}:{{ .Values.grafana.image.tag }}"
           resources:
             requests:
-              memory: "256Mi"
-              cpu: "100m"
+              memory: "{{ .Values.grafana.resources.requests.memory }}"
+              cpu: "{{ .Values.grafana.resources.requests.cpu }}"
             limits:
-              memory: "512Mi"
-              cpu: "500m"
+              memory: "{{ .Values.grafana.resources.limits.memory }}"
+              cpu: "{{ .Values.grafana.resources.limits.cpu }}"
+          ports:
+            - containerPort: {{ .Values.grafana.service.port }}
+          env:
+            - name: GF_SECURITY_ADMIN_USER
+              value: "{{ .Values.grafana.admin.user }}"
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              value: "{{ .Values.grafana.admin.password }}"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+spec:
+  type: {{ .Values.grafana.service.type }}
+  ports:
+    - port: {{ .Values.grafana.service.port }}
+      targetPort: {{ .Values.grafana.service.port }}
+  selector:
+    app: grafana
+{{- end }}
