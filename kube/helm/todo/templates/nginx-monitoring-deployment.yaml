@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-monitoring
+  labels:
+    app: nginx-monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-monitoring
+  template:
+    metadata:
+      labels:
+        app: nginx-monitoring
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+          volumeMounts:
+            - name: nginx-config-volume
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+      volumes:
+        - name: nginx-config-volume
+          configMap:
+            name: nginx-monitoring-config
