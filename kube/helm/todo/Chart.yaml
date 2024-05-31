@@ -5,12 +5,12 @@ type: application
 version: 0.1.1
 appVersion: "1.16.1"
 
-dependencies:
-  - name: prometheus
-    version: "15.11.0"
-    repository: "https://prometheus-community.github.io/helm-charts"
-    condition: prometheus.enabled
-  - name: grafana
-    version: "6.55.3"
-    repository: "https://grafana.github.io/helm-charts"
-    condition: grafana.enabled
+# dependencies:
+#   - name: prometheus
+#     version: "15.11.0"
+#     repository: "https://prometheus-community.github.io/helm-charts"
+#     condition: prometheus.enabled
+#   - name: grafana
+#     version: "6.55.3"
+#     repository: "https://grafana.github.io/helm-charts"
+#     condition: grafana.enabled
