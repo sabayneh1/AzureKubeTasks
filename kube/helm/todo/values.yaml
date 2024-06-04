@@ -123,7 +123,7 @@ elasticsearch:
     tag: 7.10.1
   resources:
     requests:
-      memory: "1gi"
+      memory: "1Gi"
       cpu: "250m"
     limits:
       memory: "2Gi"
