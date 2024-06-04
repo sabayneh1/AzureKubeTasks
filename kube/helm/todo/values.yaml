@@ -10,7 +10,7 @@ image:
   tagNotificationService: v4
   tagTodoService: v3
   tagUserService: v2
-  tagFluentd: elasticsearch
+  tagFluentd: v2
 
 imagePullSecrets: []
 nameOverride: ""
