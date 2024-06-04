@@ -9,5 +9,4 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 80
-      nodePort: 30871 # You can choose any valid node port here
-  type: NodePort
+  type: LoadBalancer

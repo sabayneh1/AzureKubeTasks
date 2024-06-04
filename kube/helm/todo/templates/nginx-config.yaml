@@ -8,15 +8,15 @@ data:
 
     http {
         upstream user_service {
-            server user-service.default.svc.cluster.local:80;
+            server user-service.default.svc.cluster.local:3002;
         }
 
         upstream todo_service {
-            server todo-service.default.svc.cluster.local:80;
+            server todo-service.default.svc.cluster.local:3003;
         }
 
         upstream notification_service {
-            server notification-service.default.svc.cluster.local:80;
+            server notification-service.default.svc.cluster.local:3004;
         }
 
         server {
