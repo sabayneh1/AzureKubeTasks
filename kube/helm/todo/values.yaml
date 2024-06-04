@@ -10,7 +10,7 @@ image:
   tagNotificationService: v4
   tagTodoService: v3
   tagUserService: v2
-  tagFluentd: v4
+  tagFluentd: v5
 
 imagePullSecrets: []
 nameOverride: ""
