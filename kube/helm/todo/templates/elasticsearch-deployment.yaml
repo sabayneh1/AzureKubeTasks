@@ -31,9 +31,9 @@ spec:
             limits:
               memory: "{{ .Values.elasticsearch.resources.limits.memory }}"
               cpu: "{{ .Values.elasticsearch.resources.limits.cpu }}"
-          volumeMounts:
-            - name: elasticsearch-data
-              mountPath: /usr/share/elasticsearch/data
+        #   volumeMounts:
+        #     - name: elasticsearch-data
+        #       mountPath: /usr/share/elasticsearch/data
           livenessProbe:
             httpGet:
               path: /_cluster/health
