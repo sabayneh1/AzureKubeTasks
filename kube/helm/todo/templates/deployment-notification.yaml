@@ -53,3 +53,85 @@ spec:
               port: 3004
             initialDelaySeconds: 30
             periodSeconds: 30
+        - name: function-invoker
+          image: curlimages/curl:latest
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              while true; do
+                sleep 60;
+                curl -X POST -H "Content-Type: application/json" -d '{"user": "username", "email": "user@example.com", "message": "Task completed"}' $(cat /etc/function-config/FUNCTION_APP_URL);
+              done;
+          env:
+            - name: FUNCTION_APP_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: function-config
+                  key: FUNCTION_APP_URL
+          volumeMounts:
+            - name: function-config
+              mountPath: /etc/function-config
+              readOnly: true
+      volumes:
+        - name: function-config
+          configMap:
+            name: function-config
+
+
+
+
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: notification-service
+#   labels:
+#     app: notification-service
+# spec:
+#   replicas: {{ .Values.replicaCount }}
+#   selector:
+#     matchLabels:
+#       app: notification-service
+#   template:
+#     metadata:
+#       labels:
+#         app: notification-service
+#     spec:
+#       containers:
+#         - name: notification-service
+#           image: "{{ .Values.image.repository }}/notification-service:{{ .Values.image.tagNotificationService }}"
+#           ports:
+#             - containerPort: 3004
+#           env:
+#             - name: TODO_SERVICE_MONGO_URI
+#               value: "{{ .Values.env.TODO_SERVICE_MONGO_URI }}"
+#             - name: USER_SERVICE_MONGO_URI
+#               value: "{{ .Values.env.USER_SERVICE_MONGO_URI }}"
+#             - name: EMAIL_USER
+#               value: "{{ .Values.env.EMAIL_USER }}"
+#             - name: EMAIL_PASS
+#               value: "{{ .Values.env.EMAIL_PASS }}"
+#             - name: EMAIL_HOST
+#               value: "{{ .Values.env.EMAIL_HOST }}"
+#             - name: EMAIL_PORT
+#               value: "{{ .Values.env.EMAIL_PORT }}"
+#             - name: JWT_SECRET
+#               value: "{{ .Values.env.JWT_SECRET }}"
+#           resources:
+#             requests:
+#               memory: {{ .Values.resources.requests.memory }}
+#               cpu: {{ .Values.resources.requests.cpu }}
+#             limits:
+#               memory: {{ .Values.resources.limits.memory }}
+#               cpu: {{ .Values.resources.limits.cpu }}
+#           livenessProbe:
+#             httpGet:
+#               path: /health
+#               port: 3004
+#             initialDelaySeconds: 30
+#             periodSeconds: 30
+#           readinessProbe:
+#             httpGet:
+#               path: /health
+#               port: 3004
+#             initialDelaySeconds: 30
+#             periodSeconds: 30
