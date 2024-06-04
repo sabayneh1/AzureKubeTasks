@@ -22,6 +22,8 @@ spec:
           env:
             - name: discovery.type
               value: "single-node"
+            - name: ES_JAVA_OPTS
+              value: "-Xms512m -Xmx512m"  # Adjust memory settings as needed
           resources:
             requests:
               memory: "{{ .Values.elasticsearch.resources.requests.memory }}"
@@ -29,3 +31,24 @@ spec:
             limits:
               memory: "{{ .Values.elasticsearch.resources.limits.memory }}"
               cpu: "{{ .Values.elasticsearch.resources.limits.cpu }}"
+          volumeMounts:
+            - name: elasticsearch-data
+              mountPath: /usr/share/elasticsearch/data
+          livenessProbe:
+            httpGet:
+              path: /_cluster/health
+              port: 9200
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /_cluster/health?wait_for_status=yellow&timeout=50s
+              port: 9200
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 5
+      volumes:
+        - name: elasticsearch-data
+          persistentVolumeClaim:
+            claimName: elasticsearch-pvc

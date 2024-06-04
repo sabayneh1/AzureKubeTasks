@@ -23,18 +23,20 @@ data:
       tag "user_service.login"
       <parse>
         @type regexp
-        expression /^(?<time>[^\s]+ [^\s]+) (?<log_level>\w+): (?<message>.*)$/
-        time_format "%Y-%m-%dT%H:%M:%S.%L%z"
+        expression /^(?<time>[^\s]+) (?<log_level>\w+): (?<message>.*)$/
+        time_format "%Y-%m-%d %H:%M:%S %z"
         keep_time_key true
-        types log_level:string, message:string
       </parse>
     </source>
 
     <filter user_service.login>
       @type parser
       key_name message
-      format /Login attempt: (?<user>\w+)|User found: (?<user>\w+)|Password match: (?<match>true|false)|Invalid password for user: (?<user>\w+)/
       reserve_data true
+      <parse>
+        @type regexp
+        expression /^(Login attempt: (?<user>\w+)|User found: (?<user>\w+)|Password match: (?<match>true|false)|Invalid password for user: (?<user>\w+))$/
+      </parse>
     </filter>
 
     <match user_service.login>
@@ -42,7 +44,7 @@ data:
       host elasticsearch.default.svc.cluster.local  # Adjust this if using a different namespace or service name
       port 9200
       logstash_format true
-      logstash_prefix user_service
+      logstash_prefix "user_service"
       include_tag_key true
-      type_name _doc
+      type_name "_doc"
     </match>
