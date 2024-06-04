@@ -1,0 +1,37 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: restore-from-blob
+spec:
+  template:
+    spec:
+      containers:
+      - name: restore
+        image: restic/restic:latest
+        env:
+        - name: RESTIC_REPOSITORY
+          value: "azure:mybackupcontainer:/backup"
+        - name: AZURE_ACCOUNT_NAME
+          valueFrom:
+            secretKeyRef:
+              name: azure-storage-secret
+              key: STORAGE_ACCOUNT
+        - name: AZURE_ACCOUNT_KEY
+          valueFrom:
+            secretKeyRef:
+              name: azure-storage-secret
+              key: STORAGE_KEY
+        - name: RESTIC_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: azure-storage-secret
+              key: RESTIC_PASSWORD
+        volumeMounts:
+        - name: restore-storage
+          mountPath: /data
+        command: ["/bin/sh"]
+        args: ["-c", "restic restore latest --target /data"]
+      volumes:
+      - name: restore-storage
+        emptyDir: {}
+      restartPolicy: Never
