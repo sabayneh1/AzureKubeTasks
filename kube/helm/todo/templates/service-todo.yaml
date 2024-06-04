@@ -7,7 +7,7 @@ spec:
     app: todo-service
   ports:
     - protocol: TCP
-      port: 80
+      port: 3003
       targetPort: 3003
   type: ClusterIP
 
