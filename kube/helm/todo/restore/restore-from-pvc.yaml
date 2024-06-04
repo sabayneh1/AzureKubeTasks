@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: restore-from-pvc
+spec:
+  template:
+    spec:
+      containers:
+      - name: restore
+        image: restic/restic:latest
+        volumeMounts:
+        - name: backup-storage
+          mountPath: /backup
+        env:
+        - name: RESTIC_REPOSITORY
+          value: "/backup"  # Use the mounted path in the PVC
+        - name: RESTIC_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: azure-storage-secret
+              key: RESTIC_PASSWORD
+        command: ["/bin/sh"]
+        args: ["-c", "restic restore latest --target /data"]
+      volumes:
+      - name: backup-storage
+        persistentVolumeClaim:
+          claimName: backup-pvc-helm  # Using the PVC created
+      restartPolicy: Never
