@@ -23,8 +23,8 @@ data:
       tag "user_service.login"
       <parse>
         @type regexp
-        expression /^(?<time>[^\s]+) (?<log_level>\w+): (?<message>.*)$/
-        time_format "%Y-%m-%d %H:%M:%S %z"
+        expression /^(?<time>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z) (?<log_level>\w+): (?<message>.*)$/
+        time_format "%Y-%m-%dT%H:%M:%S.%LZ"
         keep_time_key true
       </parse>
     </source>
@@ -35,7 +35,7 @@ data:
       reserve_data true
       <parse>
         @type regexp
-        expression /^(Login attempt: (?<user>\w+)|User found: (?<user>\w+)|Password match: (?<match>true|false)|Invalid password for user: (?<user>\w+))$/
+        expression /Login attempt: (?<user>\w+)|User found: (?<user>\w+)|Password match: (?<match>true|false)|Invalid password for user: (?<user>\w+)/
       </parse>
     </filter>
 
