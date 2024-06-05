@@ -21,23 +21,8 @@ data:
       path /var/log/user-service.log
       pos_file /var/log/fluentd.pos
       tag "user_service.login"
-      <parse>
-        @type regexp
-        expression /^(?<time>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z) (?<log_level>\w+): (?<message>.*)$/
-        time_format "%Y-%m-%dT%H:%M:%S.%LZ"
-        keep_time_key true
-      </parse>
+      format none  # This instructs Fluentd to not parse the log but pass it as a raw message
     </source>
-
-    <filter user_service.login>
-      @type parser
-      key_name message
-      reserve_data true
-      <parse>
-        @type regexp
-        expression /Login attempt: (?<user>\w+)|User found: (?<user>\w+)|Password match: (?<match>true|false)|Invalid password for user: (?<user>\w+)/
-      </parse>
-    </filter>
 
     <match user_service.login>
       @type elasticsearch
