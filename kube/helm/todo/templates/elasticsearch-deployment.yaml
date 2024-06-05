@@ -31,6 +31,9 @@ spec:
             limits:
               memory: "{{ .Values.elasticsearch.resources.limits.memory }}"
               cpu: "{{ .Values.elasticsearch.resources.limits.cpu }}"
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
           volumeMounts:
             - name: elasticsearch-data
               mountPath: /usr/share/elasticsearch/data
@@ -53,7 +56,6 @@ spec:
           persistentVolumeClaim:
             claimName: elasticsearch-data
 
-
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -65,4 +67,3 @@ spec:
   resources:
     requests:
       storage: 5Gi
-
