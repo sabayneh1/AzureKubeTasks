@@ -14,6 +14,8 @@ spec:
       labels:
         app: elasticsearch
     spec:
+      securityContext:
+        fsGroup: 1000  # Set the file system group, which should be the same as runAsGroup
       containers:
         - name: elasticsearch
           image: "{{ .Values.elasticsearch.image.repository }}:{{ .Values.elasticsearch.image.tag }}"
@@ -34,6 +36,7 @@ spec:
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
+            allowPrivilegeEscalation: false
           volumeMounts:
             - name: elasticsearch-data
               mountPath: /usr/share/elasticsearch/data
@@ -55,6 +58,7 @@ spec:
         - name: elasticsearch-data
           persistentVolumeClaim:
             claimName: elasticsearch-data
+
 
 ---
 apiVersion: v1

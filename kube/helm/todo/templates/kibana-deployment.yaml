@@ -14,6 +14,8 @@ spec:
       labels:
         app: kibana
     spec:
+      securityContext:        # Add this block to specify security settings for all containers in the pod
+        runAsUser: 0          # UID 0 for root (use cautiously)
       containers:
         - name: kibana
           image: "{{ .Values.kibana.image.repository }}:{{ .Values.kibana.image.tag }}"
@@ -36,6 +38,7 @@ spec:
         - name: kibana-storage
           persistentVolumeClaim:
             claimName: kibana-pvc
+
 
 ---
 apiVersion: v1
