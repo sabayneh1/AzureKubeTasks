@@ -29,3 +29,23 @@ spec:
             limits:
               memory: "{{ .Values.kibana.resources.limits.memory }}"
               cpu: "{{ .Values.kibana.resources.limits.cpu }}"
+          volumeMounts:
+            - name: kibana-storage
+              mountPath: /usr/share/kibana/data
+      volumes:
+        - name: kibana-storage
+          persistentVolumeClaim:
+            claimName: kibana-pvc
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kibana-pvc
+  namespace: default  # Ensure this matches the namespace of your Kibana deployment
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
