@@ -7,10 +7,10 @@ appVersion: "1.16.1"
 
 dependencies:
   - name: prometheus
-    version: "14.11.0"
+    version: "15.11.0"
     repository: "https://prometheus-community.github.io/helm-charts"
     condition: prometheus.enabled
   - name: grafana
-    version: "7.10.0"
+    version: "6.55.3"
     repository: "https://grafana.github.io/helm-charts"
     condition: grafana.enabled
