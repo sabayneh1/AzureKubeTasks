@@ -7,10 +7,10 @@ appVersion: "1.16.1"
 
 dependencies:
   - name: prometheus
-    version: "14.6.0"  # Check for the correct version to use
+    version: "14.6.0"  # Ensure this version is compatible with your Kubernetes version
     repository: "https://prometheus-community.github.io/helm-charts"
     condition: prometheus.enabled
   - name: grafana
-    version: "6.16.14"  # Check for the correct version to use
+    version: "6.16.14"  # Ensure this version is compatible with your Kubernetes version
     repository: "https://grafana.github.io/helm-charts"
     condition: grafana.enabled

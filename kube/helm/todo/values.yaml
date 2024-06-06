@@ -161,9 +161,9 @@ prometheus:
     service:
       type: ClusterIP
       port: 9090
-  prometheusSpec:
-    podSecurityPolicy:
-      enabled: false
+    prometheusSpec:
+      podSecurityPolicy:
+        enabled: false
 
 # Grafana settings
 grafana:
@@ -186,7 +186,6 @@ grafana:
       cpu: "500m"
   podSecurityPolicy:
     enabled: false
-
 
 volumes: []
 
