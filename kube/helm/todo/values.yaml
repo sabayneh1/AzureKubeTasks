@@ -144,6 +144,39 @@ kibana:
       memory: "1Gi"
       cpu: "400m"
 
+# Prometheus settings
+prometheus:
+  enabled: true
+  service:
+    type: ClusterIP
+    port: 9090
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "500m"
+    limits:
+      memory: "1Gi"
+      cpu: "1000m"
+
+# Grafana settings
+grafana:
+  enabled: true
+  image:
+    repository: grafana/grafana
+    tag: 8.3.0
+  service:
+    type: LoadBalancer
+    port: 3040
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+  adminUser: admin
+  adminPassword: "strongPassword"
+
 volumes: []
 
 volumeMounts: []
