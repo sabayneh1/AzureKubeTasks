@@ -177,3 +177,13 @@ grafana:
     limits:
       memory: "512Mi"
       cpu: "500m"
+
+volumes: []
+
+volumeMounts: []
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
