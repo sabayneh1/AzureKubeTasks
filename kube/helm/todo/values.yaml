@@ -146,11 +146,14 @@ kibana:
 
 # Prometheus settings
 prometheus:
+  prometheusSpec:
+    podSecurityPolicy:
+      enabled: false  # Explicitly disable PSP
   server:
     enabled: true
     image:
       repository: prom/prometheus
-      tag: v2.28.1  # Specify the version you want
+      tag: v2.28.1
     resources:
       requests:
         memory: "512Mi"
@@ -181,6 +184,11 @@ grafana:
     limits:
       memory: "512Mi"
       cpu: "500m"
+  grafana.ini:
+    security:
+      disable_initial_admin_creation: false
+  podSecurityPolicy:
+    enabled: false  # Explicitly disable PSP
 
 
 volumes: []
