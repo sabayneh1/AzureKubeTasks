@@ -1,4 +1,3 @@
-{{- if .Values.prometheus.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -17,7 +16,7 @@ spec:
     spec:
       containers:
         - name: prometheus
-          image: "{{ .Values.prometheus.image.repository }}:{{ .Values.prometheus.image.tag }}"
+          image: prom/prometheus:latest
           args:
             - '--config.file=/etc/prometheus/prometheus.yml'
             - '--storage.tsdb.path=/prometheus/'
@@ -32,19 +31,13 @@ spec:
               mountPath: /prometheus
             - name: prometheus-config
               mountPath: /etc/prometheus
-          resources:
-            requests:
-              memory: "{{ .Values.prometheus.resources.requests.memory }}"
-              cpu: "{{ .Values.prometheus.resources.requests.cpu }}"
-            limits:
-              memory: "{{ .Values.prometheus.resources.limits.memory }}"
-              cpu: "{{ .Values.prometheus.resources.limits.cpu }}"
       volumes:
         - name: prometheus-storage
           emptyDir: {}
         - name: prometheus-config
           configMap:
             name: prometheus-config
+
 ---
 apiVersion: v1
 kind: Service
