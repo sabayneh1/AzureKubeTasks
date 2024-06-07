@@ -20,10 +20,11 @@ data:
         }
 
         server {
-            listen 80;
+            listen 3000;
+            server_name grafana;
 
-            location /grafana/ {
-                proxy_pass http://grafana/;
+            location / {
+                proxy_pass http://grafana;
                 proxy_http_version 1.1;
                 proxy_set_header Host $host;
                 proxy_set_header X-Real-IP $remote_addr;
@@ -31,12 +32,16 @@ data:
                 proxy_set_header X-Forwarded-Proto $scheme;
                 proxy_set_header Cookie $http_cookie;
                 proxy_set_header Authorization "";
-                rewrite ^/grafana/(.*) /$1 break;
                 proxy_redirect off;
             }
+        }
 
-            location /kibana/ {
-                proxy_pass http://kibana/;
+        server {
+            listen 5601;
+            server_name kibana;
+
+            location / {
+                proxy_pass http://kibana;
                 proxy_http_version 1.1;
                 proxy_set_header Host $host;
                 proxy_set_header X-Real-IP $remote_addr;
@@ -44,12 +49,16 @@ data:
                 proxy_set_header X-Forwarded-Proto $scheme;
                 proxy_set_header Cookie $http_cookie;
                 proxy_set_header Authorization "";
-                rewrite ^/kibana/(.*) /$1 break;
                 proxy_redirect off;
             }
+        }
 
-            location /prometheus/ {
-                proxy_pass http://prometheus/;
+        server {
+            listen 9090;
+            server_name prometheus;
+
+            location / {
+                proxy_pass http://prometheus;
                 proxy_http_version 1.1;
                 proxy_set_header Host $host;
                 proxy_set_header X-Real-IP $remote_addr;
@@ -57,7 +66,6 @@ data:
                 proxy_set_header X-Forwarded-Proto $scheme;
                 proxy_set_header Cookie $http_cookie;
                 proxy_set_header Authorization "";
-                rewrite ^/prometheus/(.*) /$1 break;
                 proxy_redirect off;
             }
         }
