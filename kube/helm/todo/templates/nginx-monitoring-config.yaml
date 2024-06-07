@@ -20,11 +20,10 @@ data:
         }
 
         server {
-            listen 3000;
-            server_name grafana;
+            listen 80;
 
-            location / {
-                proxy_pass http://grafana;
+            location /grafana/ {
+                proxy_pass http://grafana/;
                 proxy_http_version 1.1;
                 proxy_set_header Host $host;
                 proxy_set_header X-Real-IP $remote_addr;
@@ -33,15 +32,12 @@ data:
                 proxy_set_header Cookie $http_cookie;
                 proxy_set_header Authorization "";
                 proxy_redirect off;
+                sub_filter '/grafana/' '/grafana/';
+                sub_filter_once off;
             }
-        }
 
-        server {
-            listen 5601;
-            server_name kibana;
-
-            location / {
-                proxy_pass http://kibana;
+            location /kibana/ {
+                proxy_pass http://kibana/;
                 proxy_http_version 1.1;
                 proxy_set_header Host $host;
                 proxy_set_header X-Real-IP $remote_addr;
@@ -50,15 +46,12 @@ data:
                 proxy_set_header Cookie $http_cookie;
                 proxy_set_header Authorization "";
                 proxy_redirect off;
+                sub_filter '/kibana/' '/kibana/';
+                sub_filter_once off;
             }
-        }
 
-        server {
-            listen 9090;
-            server_name prometheus;
-
-            location / {
-                proxy_pass http://prometheus;
+            location /prometheus/ {
+                proxy_pass http://prometheus/;
                 proxy_http_version 1.1;
                 proxy_set_header Host $host;
                 proxy_set_header X-Real-IP $remote_addr;
@@ -67,6 +60,8 @@ data:
                 proxy_set_header Cookie $http_cookie;
                 proxy_set_header Authorization "";
                 proxy_redirect off;
+                sub_filter '/prometheus/' '/prometheus/';
+                sub_filter_once off;
             }
         }
     }
