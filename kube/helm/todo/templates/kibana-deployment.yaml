@@ -15,9 +15,9 @@ spec:
         app: kibana
     spec:
       securityContext:
-        runAsUser: 1000  # Non-root user ID, adjust as needed based on your environment
-        runAsGroup: 1000  # Non-root group ID, adjust as needed
-        fsGroup: 1000  # File system group ID, ensures proper file permissions in the volume
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       containers:
         - name: kibana
           image: "{{ .Values.kibana.image.repository }}:{{ .Values.kibana.image.tag }}"
@@ -44,15 +44,3 @@ spec:
         - name: kibana-storage
           persistentVolumeClaim:
             claimName: kibana-pvc
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: kibana-pvc
-  namespace: default  # Ensure this matches the namespace of your Kibana deployment
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 2Gi
