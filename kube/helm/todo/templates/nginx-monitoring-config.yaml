@@ -51,7 +51,7 @@ data:
             }
 
             location /prometheus/ {
-                proxy_pass http://prometheus/;
+                proxy_pass http://prometheus.default.svc.cluster.local:9090/;
                 proxy_http_version 1.1;
                 proxy_set_header Host $host;
                 proxy_set_header X-Real-IP $remote_addr;
@@ -60,8 +60,6 @@ data:
                 proxy_set_header Cookie $http_cookie;
                 proxy_set_header Authorization "";
                 proxy_redirect off;
-                sub_filter '"/' '"/prometheus/';
-                sub_filter_once off;
             }
 
             location = /prometheus {

@@ -19,12 +19,10 @@ spec:
         - name: prometheus
           image: "{{ .Values.prometheus.image.repository }}:{{ .Values.prometheus.image.tag }}"
           args:
-            - '--config.file=/etc/prometheus/prometheus.yml'
-            - '--storage.tsdb.path=/prometheus/'
-            - '--web.console.libraries=/usr/share/prometheus/console_libraries'
-            - '--web.console.templates=/usr/share/prometheus/consoles'
-            - '--web.external-url=http://{{ .Values.global.externalUrl }}/prometheus/'
-            - '--web.route-prefix=/prometheus'
+            args:
+              - '--web.route-prefix=/'
+              - '--web.external-url=http://20.48.171.161/prometheus/'
+
           ports:
             - containerPort: 9090
           volumeMounts:
