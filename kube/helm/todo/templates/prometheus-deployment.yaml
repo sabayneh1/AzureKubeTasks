@@ -23,13 +23,11 @@ spec:
             - '--storage.tsdb.path=/prometheus/'
             - '--web.console.libraries=/usr/share/prometheus/console_libraries'
             - '--web.console.templates=/usr/share/prometheus/consoles'
-            - '--web.external-url=$(PROTOCOL)://$(DOMAIN)/prometheus/'
+            - '--web.external-url=http://$(DOMAIN)/prometheus/'
             - '--web.route-prefix=/prometheus'
           env:
-            - name: PROTOCOL
-              value: "http"
             - name: DOMAIN
-              value: "example.com"
+              value: "your-domain.com" # Replace with your domain or environment variable
           ports:
             - containerPort: 9090
           volumeMounts:
