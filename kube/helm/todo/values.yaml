@@ -147,7 +147,7 @@ prometheus:
       cpu: 500m
 
 global:
-  externalUrl: "20.48.171.161"
+  externalUrl: "example.com"
 
 
 # Grafana settings
