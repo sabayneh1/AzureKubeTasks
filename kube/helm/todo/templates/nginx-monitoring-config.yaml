@@ -32,6 +32,7 @@ data:
                 proxy_set_header Cookie $http_cookie;
                 proxy_set_header Authorization "";
                 rewrite ^/grafana/(.*) /$1 break;
+                proxy_redirect off;
             }
 
             location /kibana/ {
@@ -44,6 +45,7 @@ data:
                 proxy_set_header Cookie $http_cookie;
                 proxy_set_header Authorization "";
                 rewrite ^/kibana/(.*) /$1 break;
+                proxy_redirect off;
             }
 
             location /prometheus/ {
@@ -56,6 +58,7 @@ data:
                 proxy_set_header Cookie $http_cookie;
                 proxy_set_header Authorization "";
                 rewrite ^/prometheus/(.*) /$1 break;
+                proxy_redirect off;
             }
         }
     }
