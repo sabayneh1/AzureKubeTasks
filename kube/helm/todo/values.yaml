@@ -157,7 +157,7 @@ grafana:
     tag: 8.3.0
   service:
     type: ClusterIP
-    port: 3040
+    port: 3000
   admin:
     user: admin
     password: "strongPassword"
@@ -168,6 +168,7 @@ grafana:
     limits:
       memory: "512Mi"
       cpu: "500m"
+
 
 volumes: []
 
