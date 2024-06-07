@@ -32,7 +32,7 @@ data:
                 proxy_set_header Cookie $http_cookie;
                 proxy_set_header Authorization "";
                 proxy_redirect off;
-                sub_filter '/grafana/' '/grafana/';
+                sub_filter '"/' '"/grafana/';
                 sub_filter_once off;
             }
 
@@ -46,7 +46,7 @@ data:
                 proxy_set_header Cookie $http_cookie;
                 proxy_set_header Authorization "";
                 proxy_redirect off;
-                sub_filter '/kibana/' '/kibana/';
+                sub_filter '"/' '"/kibana/';
                 sub_filter_once off;
             }
 
@@ -60,7 +60,7 @@ data:
                 proxy_set_header Cookie $http_cookie;
                 proxy_set_header Authorization "";
                 proxy_redirect off;
-                sub_filter '/prometheus/' '/prometheus/';
+                sub_filter '"/' '"/prometheus/';
                 sub_filter_once off;
             }
         }
