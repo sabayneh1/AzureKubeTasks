@@ -1,4 +1,3 @@
-# kibana-deployment.yaml
 {{- if .Values.kibana.enabled }}
 apiVersion: apps/v1
 kind: Deployment
@@ -44,17 +43,6 @@ spec:
             claimName: kibana-pvc
 ---
 apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: kibana-pvc
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 2Gi
----
-apiVersion: v1
 kind: Service
 metadata:
   name: kibana
@@ -66,3 +54,34 @@ spec:
   selector:
     app: kibana
 {{- end }}
+
+
+---
+# PersistentVolume for Kibana
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: kibana-pv
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: default
+  hostPath:
+    path: /mnt/data/kibana-pv
+
+---
+# PersistentVolumeClaim for Kibana
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kibana-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: default
