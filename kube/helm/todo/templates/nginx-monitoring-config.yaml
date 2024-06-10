@@ -43,8 +43,8 @@ data:
             }
 
 
-            location /kibana/ {
-                proxy_pass http://kibana/;
+           location /kibana/ {
+                proxy_pass http://kibana.default.svc.cluster.local:5601/;
                 proxy_http_version 1.1;
                 proxy_set_header Host $host;
                 proxy_set_header X-Real-IP $remote_addr;
@@ -54,8 +54,8 @@ data:
                 proxy_set_header Authorization "";
                 proxy_redirect off;
 
-                sub_filter 'href="/'
-                          'href="/kibana/';
+                sub_filter 'href="/"'
+                          'href="/kibana/"';
                 sub_filter 'src="/'
                           'src="/kibana/';
                 sub_filter '="/'
