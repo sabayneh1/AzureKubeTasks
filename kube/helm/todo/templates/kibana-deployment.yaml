@@ -1,3 +1,4 @@
+{{- if .Values.kibana.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -44,3 +45,16 @@ spec:
         - name: kibana-storage
           persistentVolumeClaim:
             claimName: kibana-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kibana
+spec:
+  selector:
+    app: kibana
+  ports:
+    - protocol: TCP
+      port: 5601
+      targetPort: 5601
+{{- end }}
