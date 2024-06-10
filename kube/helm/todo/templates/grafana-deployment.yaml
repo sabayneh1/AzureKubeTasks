@@ -1,3 +1,57 @@
+# {{- if .Values.grafana.enabled }}
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: grafana
+#   labels:
+#     app: grafana
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: grafana
+#   template:
+#     metadata:
+#       labels:
+#         app: grafana
+#     spec:
+#       containers:
+#         - name: grafana
+#           image: "{{ .Values.grafana.image.repository }}:{{ .Values.grafana.image.tag }}"
+#           resources:
+#             requests:
+#               memory: "{{ .Values.grafana.resources.requests.memory }}"
+#               cpu: "{{ .Values.grafana.resources.requests.cpu }}"
+#             limits:
+#               memory: "{{ .Values.grafana.resources.limits.memory }}"
+#               cpu: "{{ .Values.grafana.resources.limits.cpu }}"
+#           ports:
+#             - containerPort: 3000
+#           env:
+#             - name: GF_SERVER_ROOT_URL
+#               value: "http://4.172.132.187/grafana/"
+#             - name: GF_SERVER_SERVE_FROM_SUB_PATH
+#               value: "true"
+#             - name: GF_SECURITY_ADMIN_USER
+#               value: "{{ .Values.grafana.admin.user }}"
+#             - name: GF_SECURITY_ADMIN_PASSWORD
+#               value: "{{ .Values.grafana.admin.password }}"
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: grafana
+# spec:
+#   type: ClusterIP
+#   ports:
+#     - port: 3000
+#       targetPort: 3000
+#   selector:
+#     app: grafana
+# {{- end }}
+
+
+
 {{- if .Values.grafana.enabled }}
 apiVersion: apps/v1
 kind: Deployment
@@ -29,7 +83,7 @@ spec:
             - containerPort: 3000
           env:
             - name: GF_SERVER_ROOT_URL
-              value: "http://4.172.132.187/grafana/"
+              value: "/grafana/"
             - name: GF_SERVER_SERVE_FROM_SUB_PATH
               value: "true"
             - name: GF_SECURITY_ADMIN_USER
@@ -37,20 +91,6 @@ spec:
             - name: GF_SECURITY_ADMIN_PASSWORD
               value: "{{ .Values.grafana.admin.password }}"
 ---
-# apiVersion: v1
-# kind: Service
-# metadata:
-#   name: grafana
-# spec:
-#   type: ClusterIP
-#   ports:
-#     - port: 3000
-#       targetPort: 3000
-#   selector:
-#     app: grafana
-# {{- end }}
-
-
 apiVersion: v1
 kind: Service
 metadata:
@@ -61,5 +101,6 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 80
+      targetPort: 3000
   type: LoadBalancer
+{{- end }}
