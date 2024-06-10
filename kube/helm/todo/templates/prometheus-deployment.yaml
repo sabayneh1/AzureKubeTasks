@@ -20,7 +20,7 @@ spec:
           image: "{{ .Values.prometheus.image.repository }}:{{ .Values.prometheus.image.tag }}"
           args:
             - '--web.route-prefix=/'
-            - '--web.external-url=http://20.48.171.161/prometheus/'
+            - '--web.external-url=http://4.172.132.187/prometheus/'
           ports:
             - containerPort: 9090
           volumeMounts:
