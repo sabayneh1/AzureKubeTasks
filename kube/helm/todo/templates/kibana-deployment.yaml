@@ -15,9 +15,8 @@ spec:
         app: kibana
     spec:
       securityContext:
-        fsGroup: 1000
         runAsUser: 1000
-        runAsGroup: 1000
+        fsGroup: 1000
       containers:
         - name: kibana
           image: "{{ .Values.kibana.image.repository }}:{{ .Values.kibana.image.tag }}"
@@ -36,6 +35,7 @@ spec:
           volumeMounts:
             - name: kibana-storage
               mountPath: /usr/share/kibana/data
+              subPath: data
       volumes:
         - name: kibana-storage
           persistentVolumeClaim:
@@ -46,7 +46,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: kibana-pvc
-  namespace: default  # Ensure this matches the namespace of your Kibana deployment
+  namespace: default
 spec:
   accessModes:
     - ReadWriteOnce
