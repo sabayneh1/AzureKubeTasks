@@ -19,14 +19,15 @@
 #       port: 9090
 #       targetPort: 9090
 #   type: LoadBalancer
-apiVersion: v1
-kind: Service
-metadata:
-  name: kibana
-spec:
-  type: ClusterIP
-  ports:
-    - port: 5601
-      targetPort: 5601
-  selector:
-    app: kibana
+
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: kibana
+# spec:
+#   type: ClusterIP
+#   ports:
+#     - port: 5601
+#       targetPort: 5601
+#   selector:
+#     app: kibana
