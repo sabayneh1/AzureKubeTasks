@@ -62,6 +62,7 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: kibana-pv
+  namespace: default
 spec:
   capacity:
     storage: 5Gi
@@ -78,6 +79,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: kibana-pvc
+  namespace: default 
 spec:
   accessModes:
     - ReadWriteOnce
