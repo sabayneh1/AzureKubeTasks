@@ -23,7 +23,7 @@ data:
             listen 80;
 
             location /grafana/ {
-                proxy_pass http://grafana/;
+                proxy_pass http://grafana.default.svc.cluster.local:3000/;
                 proxy_http_version 1.1;
                 proxy_set_header Host $host;
                 proxy_set_header X-Real-IP $remote_addr;
@@ -32,9 +32,13 @@ data:
                 proxy_set_header Cookie $http_cookie;
                 proxy_set_header Authorization "";
                 proxy_redirect off;
-                sub_filter '"/' '"/grafana/';
+
+                sub_filter_types *;
+                sub_filter '="/' '="/grafana/';
                 sub_filter_once off;
+                sub_filter_last_modified on;
             }
+
 
             location /kibana/ {
                 proxy_pass http://kibana/;
