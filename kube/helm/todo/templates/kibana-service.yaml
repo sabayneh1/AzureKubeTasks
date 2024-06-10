@@ -1,33 +1,33 @@
-# apiVersion: v1
-# kind: Service
-# metadata:
-#   name: kibana
-# spec:
-#   selector:
-#     app: kibana
-#   ports:
-#     - name: kibana
-#       protocol: TCP
-#       port: 5601
-#       targetPort: 5601
-#     - name: grafana
-#       protocol: TCP
-#       port: 3040
-#       targetPort: 3040
-#     - name: prometheus
-#       protocol: TCP
-#       port: 9090
-#       targetPort: 9090
-#   type: LoadBalancer
-
 apiVersion: v1
 kind: Service
 metadata:
   name: kibana
 spec:
-  type: ClusterIP
-  ports:
-    - port: 5601
-      targetPort: 5601
   selector:
     app: kibana
+  ports:
+    - name: kibana
+      protocol: TCP
+      port: 5601
+      targetPort: 5601
+    - name: grafana
+      protocol: TCP
+      port: 3040
+      targetPort: 3040
+    - name: prometheus
+      protocol: TCP
+      port: 9090
+      targetPort: 9090
+  type: LoadBalancer
+
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: kibana
+# spec:
+#   type: ClusterIP
+#   ports:
+#     - port: 5601
+#       targetPort: 5601
+#   selector:
+#     app: kibana
