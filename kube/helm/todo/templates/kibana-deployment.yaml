@@ -16,6 +16,7 @@ spec:
     spec:
       securityContext:
         runAsUser: 1000
+        runAsGroup: 1000
         fsGroup: 1000
       containers:
         - name: kibana
@@ -35,7 +36,6 @@ spec:
           volumeMounts:
             - name: kibana-storage
               mountPath: /usr/share/kibana/data
-              subPath: data
       volumes:
         - name: kibana-storage
           persistentVolumeClaim:
@@ -54,6 +54,7 @@ spec:
     requests:
       storage: 5Gi
   storageClassName: default
+
 ---
 apiVersion: v1
 kind: Service
@@ -66,3 +67,18 @@ spec:
       targetPort: 5601
   selector:
     app: kibana
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: kibana-pv
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: default
+  hostPath:
+    path: /mnt/data/kibana-pv
