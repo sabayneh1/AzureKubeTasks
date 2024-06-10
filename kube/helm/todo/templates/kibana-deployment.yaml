@@ -56,20 +56,20 @@ spec:
     requests:
       storage: 5Gi
 
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: kibana-pv
-spec:
-  capacity:
-    storage: 5Gi
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: default
-  hostPath:
-    path: /mnt/data/kibana-pv
+# ---
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: kibana-pv
+# spec:
+#   capacity:
+#     storage: 5Gi
+#   accessModes:
+#     - ReadWriteOnce
+#   persistentVolumeReclaimPolicy: Retain
+#   storageClassName: default
+#   hostPath:
+#     path: /mnt/data/kibana-pv
 
 ---
 apiVersion: v1
