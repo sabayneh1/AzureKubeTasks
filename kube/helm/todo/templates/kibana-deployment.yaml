@@ -15,7 +15,9 @@ spec:
         app: kibana
     spec:
       securityContext:
-        fsGroup: 1000  # Set the file system group
+        runAsUser: 1000  # Non-root user ID, adjust as needed based on your environment
+        runAsGroup: 1000  # Non-root group ID, adjust as needed
+        fsGroup: 1000  # File system group ID, ensures proper file permissions in the volume
       containers:
         - name: kibana
           image: "{{ .Values.kibana.image.repository }}:{{ .Values.kibana.image.tag }}"
@@ -31,55 +33,17 @@ spec:
             limits:
               memory: "{{ .Values.kibana.resources.limits.memory }}"
               cpu: "{{ .Values.kibana.resources.limits.cpu }}"
-          securityContext:
-            runAsUser: 1000
-            runAsGroup: 1000
-            allowPrivilegeEscalation: false
-          volumeMounts:
-            - name: kibana-storage
-              mountPath: /usr/share/kibana/data
-      volumes:
-        - name: kibana-storage
-          persistentVolumeClaim:
-            claimName: kibana-pvc
+
 
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: kibana-pvc
-  namespace: default
+  namespace: default  # Ensure this matches the namespace of your Kibana deployment
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 5Gi
-
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: kibana-pv
-spec:
-  capacity:
-    storage: 5Gi
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: default
-  hostPath:
-    path: /mnt/data/kibana-pv
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: kibana
-spec:
-  type: ClusterIP
-  ports:
-    - port: 5601
-      targetPort: 5601
-  selector:
-    app: kibana
+      storage: 2Gi
