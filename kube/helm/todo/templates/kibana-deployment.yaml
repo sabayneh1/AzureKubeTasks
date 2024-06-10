@@ -1,4 +1,3 @@
-{{- if .Values.kibana.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -23,10 +22,6 @@ spec:
           env:
             - name: ELASTICSEARCH_HOSTS
               value: "http://elasticsearch:9200"
-            - name: SERVER_BASEPATH
-              value: "/kibana"
-            - name: SERVER_REWRITEBASEPATH
-              value: "true"
           resources:
             requests:
               memory: "{{ .Values.kibana.resources.requests.memory }}"
@@ -41,6 +36,19 @@ spec:
         - name: kibana-storage
           persistentVolumeClaim:
             claimName: kibana-pvc
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kibana-pvc
+  namespace: default  # Ensure this matches the namespace of your Kibana deployment
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
 ---
 apiVersion: v1
 kind: Service
@@ -53,37 +61,5 @@ spec:
       targetPort: 5601
   selector:
     app: kibana
-{{- end }}
 
 
----
-# PersistentVolume for Kibana
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: kibana-pv
-  namespace: default
-spec:
-  capacity:
-    storage: 5Gi
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: default
-  hostPath:
-    path: /mnt/data/kibana-pv
-
----
-# PersistentVolumeClaim for Kibana
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: kibana-pvc
-  namespace: default 
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 5Gi
-  storageClassName: default
