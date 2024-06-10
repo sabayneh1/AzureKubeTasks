@@ -52,7 +52,15 @@ data:
                 proxy_set_header X-Forwarded-Proto $scheme;
                 proxy_set_header Cookie $http_cookie;
                 proxy_set_header Authorization "";
-                rewrite ^/kibana(/.*)$ $1 break;
+                proxy_redirect off;
+
+                sub_filter 'href="/'
+                          'href="/kibana/';
+                sub_filter 'src="/'
+                          'src="/kibana/';
+                sub_filter '="/'
+                          '="/kibana/';
+                sub_filter_once off;
             }
 
             location /prometheus/ {
