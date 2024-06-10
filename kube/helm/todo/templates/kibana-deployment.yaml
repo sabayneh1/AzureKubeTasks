@@ -15,10 +15,6 @@ spec:
       labels:
         app: kibana
     spec:
-      securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
       containers:
         - name: kibana
           image: "{{ .Values.kibana.image.repository }}:{{ .Values.kibana.image.tag }}"
@@ -47,14 +43,13 @@ spec:
             claimName: kibana-pvc
 ---
 apiVersion: v1
-kind: Service
+kind: PersistentVolumeClaim
 metadata:
-  name: kibana
+  name: kibana-pvc
 spec:
-  selector:
-    app: kibana
-  ports:
-    - protocol: TCP
-      port: 5601
-      targetPort: 5601
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
 {{- end }}
