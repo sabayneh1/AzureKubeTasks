@@ -1,3 +1,39 @@
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: todo-service
+#   labels:
+#     app: todo-service
+# spec:
+#   replicas: {{ .Values.replicaCount }}
+#   selector:
+#     matchLabels:
+#       app: todo-service
+#   template:
+#     metadata:
+#       labels:
+#         app: todo-service
+#     spec:
+#       containers:
+#         - name: todo-service
+#           image: "{{ .Values.image.repository }}/todo-service:{{ .Values.image.tagTodoService }}"
+#           imagePullPolicy: {{ .Values.image.pullPolicy }}
+#           ports:
+#             - containerPort: 3003
+#           env:
+#             - name: MONGO_URI
+#               value: "{{ .Values.env.TODO_SERVICE_MONGO_URI }}"
+#             - name: JWT_SECRET
+#               value: "{{ .Values.env.JWT_SECRET }}"
+#           resources:
+#             requests:
+#               memory: {{ .Values.resources.requests.memory }}
+#               cpu: {{ .Values.resources.requests.cpu }}
+#             limits:
+#               memory: {{ .Values.resources.limits.memory }}
+#               cpu: {{ .Values.resources.limits.cpu }}
+
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -25,10 +61,27 @@ spec:
               value: "{{ .Values.env.TODO_SERVICE_MONGO_URI }}"
             - name: JWT_SECRET
               value: "{{ .Values.env.JWT_SECRET }}"
-          resources:
-            requests:
-              memory: {{ .Values.resources.requests.memory }}
-              cpu: {{ .Values.resources.requests.cpu }}
-            limits:
-              memory: {{ .Values.resources.limits.memory }}
-              cpu: {{ .Values.resources.limits.cpu }}
+        - name: redis-proxy
+          image: redis:6.2
+          ports:
+            - containerPort: 6379
+          env:
+            - name: REDIS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: redis-config
+                  key: REDIS_HOST
+            - name: REDIS_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: redis-config
+                  key: REDIS_PORT
+            - name: REDIS_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: redis-config
+                  key: REDIS_PASSWORD
+          command: ["redis-server"]
+          args:
+            - "--requirepass"
+            - "$(REDIS_PASSWORD)"

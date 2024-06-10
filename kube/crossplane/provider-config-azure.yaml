@@ -1,0 +1,11 @@
+apiVersion: azure.crossplane.io/v1alpha3
+kind: ProviderConfig
+metadata:
+  name: azure-provider
+spec:
+  credentials:
+    source: Secret
+    secretRef:
+      namespace: crossplane-system
+      name: azure-creds
+      key: creds

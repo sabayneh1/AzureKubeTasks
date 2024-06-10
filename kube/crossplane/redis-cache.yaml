@@ -1,0 +1,17 @@
+apiVersion: cache.azure.crossplane.io/v1alpha1
+kind: Redis
+metadata:
+  name: my-redis-cache
+spec:
+  forProvider:
+    resourceGroupName: myResourceGroup
+    location: canadacentral
+    sku:
+      name: Basic
+      family: C
+      capacity: 0
+  providerConfigRef:
+    name: azure-provider
+  writeConnectionSecretToRef:
+    name: redis-connection-details
+    namespace: default
