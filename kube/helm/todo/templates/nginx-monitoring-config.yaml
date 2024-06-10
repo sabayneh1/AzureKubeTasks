@@ -33,10 +33,13 @@ data:
                 proxy_set_header Authorization "";
                 proxy_redirect off;
 
-                sub_filter_types *;
-                sub_filter '="/' '="/grafana/';
+                sub_filter 'href="/"'
+                          'href="/grafana/"';
+                sub_filter 'src="/'
+                          'src="/grafana/';
+                sub_filter '="/'
+                          '="/grafana/';
                 sub_filter_once off;
-                sub_filter_last_modified on;
             }
 
 

@@ -29,9 +29,9 @@ spec:
             - containerPort: 3000
           env:
             - name: GF_SERVER_ROOT_URL
-              value: "/grafana"  # Simplified to ensure correct base path handling
+              value: "%(protocol)s://%(domain)s/grafana/"
             - name: GF_SERVER_SERVE_FROM_SUB_PATH
-              value: "true"  # Important to be true to serve Grafana on a subpath
+              value: "true"
             - name: GF_SECURITY_ADMIN_USER
               value: "{{ .Values.grafana.admin.user }}"
             - name: GF_SECURITY_ADMIN_PASSWORD
