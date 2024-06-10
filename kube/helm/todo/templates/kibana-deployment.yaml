@@ -48,7 +48,8 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 5Gi
+      storage: 5Gi  # Keep the original size to avoid conflicts
+  storageClassName: default
 ---
 apiVersion: v1
 kind: Service
@@ -61,5 +62,3 @@ spec:
       targetPort: 5601
   selector:
     app: kibana
-
-
