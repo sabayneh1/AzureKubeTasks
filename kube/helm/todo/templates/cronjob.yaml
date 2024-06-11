@@ -17,14 +17,33 @@ spec:
             env:
             - name: RESTIC_REPOSITORY
               value: "/backup"  # Use the mounted path in the PVC
+            - name: AZURE_ACCOUNT_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: azure-storage-secret
+                  key: STORAGE_ACCOUNT
+            - name: AZURE_ACCOUNT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: azure-storage-secret
+                  key: STORAGE_KEY
+            - name: RESTIC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: azure-storage-secret
+                  key: RESTIC_PASSWORD
+            - name: AZURE_CONTAINER_NAME
+              value: "mybackupcontainer"
+            command: ["/bin/sh", "-c"]
+            args:
+              - |
+                restic backup /backup && \
+                restic -r azure:${AZURE_ACCOUNT_NAME}.blob.core.windows.net/${AZURE_CONTAINER_NAME} backup /backup
           volumes:
           - name: backup-storage
             persistentVolumeClaim:
-              claimName: backup-pvc  # Using the PVC created
+              claimName: backup-pvc-helm  # Using the PVC created
           restartPolicy: OnFailure
-
-
-
 
 
 # apiVersion: batch/v1
@@ -44,11 +63,15 @@ spec:
 #             - name: backup-storage
 #               mountPath: /backup  # Mount point for Restic repository
 #             env:
-#             - name: RESTIC_REPOSITORY  # Environment variable for Restic repository
-#               value: "s3://your-bucket-name"  # Replace with your storage location (e.g., S3 bucket)
+#             - name: RESTIC_REPOSITORY
+#               value: "/backup"  # Use the mounted path in the PVC
 #           volumes:
-#           - name: backup-storage  # Persistent volume claim for backup data
+#           - name: backup-storage
 #             persistentVolumeClaim:
-#               claimName: backup-pvc  # Replace with your PVC name
-
+#               claimName: backup-pvc  # Using the PVC created
 #           restartPolicy: OnFailure
+
+
+
+
+

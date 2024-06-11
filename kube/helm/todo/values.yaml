@@ -140,11 +140,11 @@ prometheus:
     tag: latest
   resources:
     requests:
-      memory: 500Mi
-      cpu: 250m
+      memory: "500Mi"
+      cpu: "250m"
     limits:
-      memory: 1Gi
-      cpu: 500m
+      memory: "1Gi"
+      cpu: "500m"
 
 global:
   externalUrl: "example.com"
