@@ -17,6 +17,11 @@ spec:
             env:
             - name: RESTIC_REPOSITORY
               value: "/backup"  # Use the mounted path in the PVC
+            - name: RESTIC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: azure-storage-secret
+                  key: RESTIC_PASSWORD
             - name: AZURE_ACCOUNT_NAME
               valueFrom:
                 secretKeyRef:
@@ -27,23 +32,20 @@ spec:
                 secretKeyRef:
                   name: azure-storage-secret
                   key: STORAGE_KEY
-            - name: RESTIC_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: azure-storage-secret
-                  key: RESTIC_PASSWORD
-            - name: AZURE_CONTAINER_NAME
-              value: "mybackupcontainer"
-            command: ["/bin/sh", "-c"]
-            args:
-              - |
-                restic backup /backup && \
-                restic -r azure:${AZURE_ACCOUNT_NAME}.blob.core.windows.net/${AZURE_CONTAINER_NAME} backup /backup
+            command:
+            - /bin/sh
+            - -c
+            - |
+              if [ ! -f /backup/config ]; then
+                restic -r azure:mybackupcontainer:/backup init
+              fi
+              restic -r azure:mybackupcontainer:/backup backup /backup
           volumes:
           - name: backup-storage
             persistentVolumeClaim:
               claimName: backup-pvc-helm  # Using the PVC created
           restartPolicy: OnFailure
+
 
 
 # apiVersion: batch/v1
