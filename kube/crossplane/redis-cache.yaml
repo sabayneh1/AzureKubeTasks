@@ -1,4 +1,4 @@
-apiVersion: cache.azure.crossplane.io/v1alpha1
+apiVersion: cache.azure.upbound.io/v1beta1
 kind: Redis
 metadata:
   name: my-redis-cache

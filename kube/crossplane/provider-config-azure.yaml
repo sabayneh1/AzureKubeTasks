@@ -1,4 +1,4 @@
-apiVersion: azure.crossplane.io/v1alpha3
+apiVersion: azure.upbound.io/v1beta1
 kind: ProviderConfig
 metadata:
   name: azure-provider
