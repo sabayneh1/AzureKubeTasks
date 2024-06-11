@@ -7,9 +7,9 @@ spec:
     resourceGroupName: aksproject
     location: canadacentral
     sku:
-      name: your-sku-name
-      family: your-sku-family
-      capacity: your-sku-capacity
+      name: Standard
+      family: C
+      capacity: 1
   providerConfigRef:
     name: azure-provider
   writeConnectionSecretToRef:
