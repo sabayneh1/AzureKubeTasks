@@ -60,11 +60,8 @@ spec:
             - |
               while true; do
                 sleep 60;
-                echo "Invoking function at $FUNCTION_APP_URL";
-                response=$(curl -s -w "%{http_code}" -X POST -H "Content-Type: application/json" -d '{"user": "username", "email": "user@example.com", "message": "Task completed"}' $FUNCTION_APP_URL);
-                http_code=$(tail -n1 <<< "$response");
-                echo "Function invocation status: $http_code";
-                done;
+                curl -X POST -H "Content-Type: application/json" -d '{"user": "username", "email": "user@example.com", "message": "Task completed"}' $FUNCTION_APP_URL;
+              done;
           env:
             - name: FUNCTION_APP_URL
               valueFrom:
