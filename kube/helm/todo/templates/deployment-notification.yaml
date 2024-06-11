@@ -60,7 +60,7 @@ spec:
             - |
               while true; do
                 sleep 60;
-                curl -X POST -H "Content-Type: application/json" -d '{"user": "username", "email": "user@example.com", "message": "Task completed"}' $(cat /etc/function-config/FUNCTION_APP_URL);
+                curl -X POST -H "Content-Type: application/json" -d '{"user": "username", "email": "user@example.com", "message": "Task completed"}' $FUNCTION_APP_URL;
               done;
           env:
             - name: FUNCTION_APP_URL
