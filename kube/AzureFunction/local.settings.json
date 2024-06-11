@@ -1,7 +1,7 @@
 {
-    "IsEncrypted": false,
-    "Values": {
-      "AzureWebJobsStorage": "UseDevelopmentStorage=true",
-      "FUNCTIONS_WORKER_RUNTIME": "node"
-    }
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "<Your-Actual-Connection-String>",
+    "FUNCTIONS_WORKER_RUNTIME": "node"
   }
+}
