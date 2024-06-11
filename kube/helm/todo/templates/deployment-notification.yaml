@@ -64,7 +64,7 @@ spec:
                 response=$(curl -s -w "%{http_code}" -X POST -H "Content-Type: application/json" -d '{"user": "username", "email": "user@example.com", "message": "Task completed"}' $FUNCTION_APP_URL);
                 http_code=$(tail -n1 <<< "$response");
                 echo "Function invocation status: $http_code";
-              done;
+                done;
           env:
             - name: FUNCTION_APP_URL
               valueFrom:
