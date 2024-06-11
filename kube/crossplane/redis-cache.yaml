@@ -4,12 +4,12 @@ metadata:
   name: my-redis-cache
 spec:
   forProvider:
-    resourceGroupName: myResourceGroup
+    resourceGroupName: aksproject
     location: canadacentral
     sku:
-      name: Basic
-      family: C
-      capacity: 0
+      name: your-sku-name
+      family: your-sku-family
+      capacity: your-sku-capacity
   providerConfigRef:
     name: azure-provider
   writeConnectionSecretToRef:
