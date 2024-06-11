@@ -1,0 +1,12 @@
+{
+    "name": "AzureFunction",
+    "version": "1.0.0",
+    "description": "Azure Function for logging user activities",
+    "main": "index.js",
+    "scripts": {
+      "start": "func start"
+    },
+    "dependencies": {
+      "azure-storage": "^2.10.3"
+    }
+  }
