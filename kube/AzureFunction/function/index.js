@@ -27,6 +27,8 @@ module.exports = async function (context, req) {
             Timestamp: {'_': new Date()}
         };
 
+        context.log("Inserting entity:", task);
+
         tableSvc.insertEntity(tableName, task, function (error, result, response) {
             if (error) {
                 context.log.error("Error inserting entity: ", error);
