@@ -13,7 +13,6 @@ module.exports = async function (context, req) {
                 status: 500,
                 body: "Error creating table"
             };
-            context.done();
             return;
         }
 
@@ -40,7 +39,6 @@ module.exports = async function (context, req) {
                     body: "Error logging user activity"
                 };
             }
-            context.done();
         });
     });
 };
