@@ -48,6 +48,9 @@ env:
   EMAIL_HOST: "mailslurp.mx"
   EMAIL_PORT: "2465"
   JWT_SECRET: "samander's_jwt_secret"
+  REDIS_HOST: "my-redis-master"
+  REDIS_PORT: "6379"
+  REDIS_PASSWORD: "2U4Y6ClMdh"
 
 livenessProbe:
   httpGet:
