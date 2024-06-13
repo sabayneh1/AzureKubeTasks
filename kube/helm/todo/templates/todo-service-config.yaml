@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: todo-service-config
+data:
+  REDIS_HOST: "my-redis-master"
+  REDIS_PORT: "6379"
+  REDIS_PASSWORD: "your-redis-password"
