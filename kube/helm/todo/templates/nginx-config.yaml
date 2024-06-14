@@ -7,6 +7,8 @@ data:
     events {}
 
     http {
+        proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=redis_cache:10m inactive=60m use_temp_path=off;
+
         upstream user_service {
             server user-service.default.svc.cluster.local:3002;
         }
@@ -20,7 +22,7 @@ data:
         }
 
         upstream redis_sidecar {
-            server todo-service.default.svc.cluster.local:6379;  # Change the port to 6379
+            server redis-sidecar:6379;
         }
 
         server {
@@ -102,6 +104,7 @@ data:
             }
         }
     }
+
 
 # apiVersion: v1
 # kind: ConfigMap
