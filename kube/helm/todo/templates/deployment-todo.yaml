@@ -26,7 +26,7 @@ spec:
             - name: JWT_SECRET
               value: "{{ .Values.env.JWT_SECRET }}"
         - name: redis-sidecar
-          image: "your-docker-repo/redis-sidecar:latest"
+          image: "sabayneh/redis-sidecar:latest"
           imagePullPolicy: Always
           env:
             - name: REDIS_HOST
