@@ -22,7 +22,7 @@ data:
         }
 
         upstream redis_sidecar {
-            server redis-sidecar:6379;
+            server redis-sidecar.default.svc.cluster.local:6379;
         }
 
         server {
