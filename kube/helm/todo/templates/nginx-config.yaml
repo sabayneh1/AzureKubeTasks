@@ -20,7 +20,7 @@ data:
         }
 
         upstream redis_sidecar {
-            server redis-sidecar:4000;
+            server todo-service.default.svc.cluster.local:6379;  # Change the port to 6379
         }
 
         server {
@@ -102,8 +102,6 @@ data:
             }
         }
     }
-
-
 
 # apiVersion: v1
 # kind: ConfigMap
