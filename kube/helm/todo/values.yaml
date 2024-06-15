@@ -4,7 +4,7 @@ image:
   repository: sabayneh
   pullPolicy: Always
   tagNotificationService: v4
-  tagTodoService: v7
+  tagTodoService: v8
   tagUserService: v2
   tagFluentd: v6
 
