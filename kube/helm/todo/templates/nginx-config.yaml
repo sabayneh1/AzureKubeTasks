@@ -7,8 +7,6 @@ data:
     events {}
 
     http {
-        proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=redis_cache:10m inactive=60m use_temp_path=off;
-
         upstream user_service {
             server user-service.default.svc.cluster.local:3002;
         }
@@ -22,7 +20,7 @@ data:
         }
 
         upstream redis_sidecar {
-            server redis-sidecar.default.svc.cluster.local:6379; 
+            server redis-sidecar.default.svc.cluster.local:6379;
         }
 
         server {
@@ -101,12 +99,17 @@ data:
 
             location /cache {
                 proxy_pass http://redis_sidecar;
+                proxy_http_version 1.1;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_set_header Cookie $http_cookie;
+                proxy_set_header Authorization "";
             }
         }
     }
 
-
-#updated
 
 
 
@@ -119,6 +122,8 @@ data:
 #     events {}
 
 #     http {
+#         proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=redis_cache:10m inactive=60m use_temp_path=off;
+
 #         upstream user_service {
 #             server user-service.default.svc.cluster.local:3002;
 #         }
@@ -129,6 +134,10 @@ data:
 
 #         upstream notification_service {
 #             server notification-service.default.svc.cluster.local:3004;
+#         }
+
+#         upstream redis_sidecar {
+#             server redis-sidecar.default.svc.cluster.local:6379;
 #         }
 
 #         server {
@@ -165,6 +174,14 @@ data:
 #                 proxy_set_header X-Forwarded-Proto $scheme;
 #                 proxy_set_header Cookie $http_cookie;
 #                 proxy_set_header Authorization "";
+
+#                 # Cache logic
+#                 proxy_pass_request_body off;
+#                 proxy_set_header Content-Length "";
+#                 proxy_cache_use_stale error timeout updating;
+#                 proxy_cache_bypass $http_pragma $http_authorization;
+#                 proxy_cache redis_cache;
+#                 add_header X-Cache-Status $upstream_cache_status;
 #             }
 
 #             location /todos/ {
@@ -176,6 +193,14 @@ data:
 #                 proxy_set_header X-Forwarded-Proto $scheme;
 #                 proxy_set_header Cookie $http_cookie;
 #                 proxy_set_header Authorization "";
+
+#                 # Cache logic
+#                 proxy_pass_request_body off;
+#                 proxy_set_header Content-Length "";
+#                 proxy_cache_use_stale error timeout updating;
+#                 proxy_cache_bypass $http_pragma $http_authorization;
+#                 proxy_cache redis_cache;
+#                 add_header X-Cache-Status $upstream_cache_status;
 #             }
 
 #             location /notifications/ {
@@ -188,5 +213,10 @@ data:
 #                 proxy_set_header Cookie $http_cookie;
 #                 proxy_set_header Authorization "";
 #             }
+
+#             location /cache {
+#                 proxy_pass http://redis_sidecar;
+#             }
 #         }
 #     }
+
