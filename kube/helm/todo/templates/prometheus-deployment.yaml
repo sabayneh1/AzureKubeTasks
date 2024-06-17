@@ -18,14 +18,12 @@ spec:
       serviceAccountName: prometheus
       containers:
         - name: prometheus
-          image: "{{ .Values.prometheus.image.repository }}:{{ .Values.prometheus.image.tag }}"
+          image: "prom/prometheus:v2.52.0"
           args:
             - '--config.file=/etc/prometheus/prometheus.yml'
             - '--storage.tsdb.path=/prometheus'
             - '--web.console.libraries=/usr/share/prometheus/console_libraries'
             - '--web.console.templates=/usr/share/prometheus/consoles'
-            - '--web.route-prefix=/'
-            - '--web.external-url=http://4.172.132.187/prometheus/'
           ports:
             - containerPort: 9090
           volumeMounts:
@@ -35,17 +33,18 @@ spec:
               mountPath: /etc/prometheus
           resources:
             requests:
-              memory: "{{ .Values.prometheus.resources.requests.memory }}"
-              cpu: "{{ .Values.prometheus.resources.requests.cpu }}"
+              memory: "256Mi"
+              cpu: "100m"
             limits:
-              memory: "{{ .Values.prometheus.resources.limits.memory }}"
-              cpu: "{{ .Values.prometheus.resources.limits.cpu }}"
+              memory: "512Mi"
+              cpu: "500m"
       volumes:
         - name: prometheus-storage
           emptyDir: {}
         - name: prometheus-config
           configMap:
             name: prometheus-config
+
 ---
 apiVersion: v1
 kind: Service
