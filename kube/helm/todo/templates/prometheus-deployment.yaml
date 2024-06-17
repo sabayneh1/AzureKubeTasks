@@ -52,7 +52,7 @@ kind: Service
 metadata:
   name: prometheus
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   ports:
     - port: 9090
       targetPort: 9090
@@ -61,4 +61,4 @@ spec:
 {{- end }}
 
 
-## stable update 
+## stable update
