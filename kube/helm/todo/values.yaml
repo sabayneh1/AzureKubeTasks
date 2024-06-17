@@ -50,7 +50,7 @@ env:
   JWT_SECRET: "samander's_jwt_secret"
   REDIS_HOST: "my-redis-master"
   REDIS_PORT: "6379"
-  REDIS_PASSWORD: "AGTdBfgkSD"
+  REDIS_PASSWORD: "4GXI57FFvk"
 
 
 livenessProbe:
