@@ -26,15 +26,9 @@ spec:
             - name: JWT_SECRET
               value: "{{ .Values.env.JWT_SECRET }}"
             - name: REDIS_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: todo-service-config
-                  key: REDIS_HOST
+              value: "{{ .Values.redis.host }}"
             - name: REDIS_PORT
-              valueFrom:
-                configMapKeyRef:
-                  name: todo-service-config
-                  key: REDIS_PORT
+              value: "{{ .Values.redis.port }}"
             - name: REDIS_PASSWORD
               value: "{{ .Values.redis.password }}"
         - name: redis-sidecar
@@ -42,15 +36,9 @@ spec:
           imagePullPolicy: Always
           env:
             - name: REDIS_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: todo-service-config
-                  key: REDIS_HOST
+              value: "{{ .Values.redis.host }}"
             - name: REDIS_PORT
-              valueFrom:
-                configMapKeyRef:
-                  name: todo-service-config
-                  key: REDIS_PORT
+              value: "{{ .Values.redis.port }}"
             - name: REDIS_PASSWORD
               value: "{{ .Values.redis.password }}"
           ports:

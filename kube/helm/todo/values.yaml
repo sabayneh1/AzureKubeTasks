@@ -48,10 +48,12 @@ env:
   EMAIL_HOST: "mailslurp.mx"
   EMAIL_PORT: "2465"
   JWT_SECRET: "samander's_jwt_secret"
-  REDIS_HOST: "my-redis-master"
-  REDIS_PORT: "6379"
-  REDIS_PASSWORD: "4GXI57FFvk"
 
+redis:
+  usePassword: true
+  password: "4GXI57FFvk"
+  host: "my-redis-master"
+  port: "6379"
 
 livenessProbe:
   httpGet:
@@ -136,7 +138,6 @@ kibana:
       memory: "1Gi"
       cpu: "400m"
 
-# Prometheus settings
 prometheus:
   enabled: true
   image:
@@ -153,8 +154,6 @@ prometheus:
 global:
   externalUrl: "example.com"
 
-
-# Grafana settings
 grafana:
   enabled: true
   image:
@@ -173,7 +172,6 @@ grafana:
     limits:
       memory: "512Mi"
       cpu: "500m"
-
 
 volumes: []
 
