@@ -4,7 +4,7 @@ image:
   repository: sabayneh
   pullPolicy: Always
   tagNotificationService: v4
-  tagTodoService: v8
+  tagTodoService: v6
   tagUserService: v2
   tagFluentd: v6
 
@@ -49,10 +49,10 @@ env:
   EMAIL_PORT: "2465"
   JWT_SECRET: "samander's_jwt_secret"
 
-#redius
+#redis
 redis:
   usePassword: true
-  password: "4GXI57FFvk"
+  password: "SoEAehoZb"
   host: "my-redis-master"
   port: "6379"
 
