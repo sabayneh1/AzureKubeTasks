@@ -36,10 +36,7 @@ spec:
                   name: todo-service-config
                   key: REDIS_PORT
             - name: REDIS_PASSWORD
-              valueFrom:
-                configMapKeyRef:
-                  name: todo-service-config
-                  key: REDIS_PASSWORD
+              value: "{{ .Values.redis.password }}"
         - name: redis-sidecar
           image: "sabayneh/redis-sidecar:latest"
           imagePullPolicy: Always
@@ -55,10 +52,7 @@ spec:
                   name: todo-service-config
                   key: REDIS_PORT
             - name: REDIS_PASSWORD
-              valueFrom:
-                configMapKeyRef:
-                  name: todo-service-config
-                  key: REDIS_PASSWORD
+              value: "{{ .Values.redis.password }}"
           ports:
             - containerPort: 6379
           resources:
