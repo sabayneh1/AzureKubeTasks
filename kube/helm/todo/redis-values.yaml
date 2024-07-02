@@ -6,6 +6,6 @@ env:
 
 redis:
   usePassword: true
-  password: "4GXI57FFvk"
+  password: "SoEAehoZb"
   host: "my-redis-master"
   port: "6379"
