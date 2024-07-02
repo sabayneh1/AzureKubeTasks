@@ -1,8 +1,8 @@
 replicaCount: 1
-image:
-  repository: my-repo
-  tagTodoService: latest
-  pullPolicy: Always
+# image:
+#   repository: my-repo
+#   tagTodoService: latest
+#   pullPolicy: Always
 
 env:
   TODO_SERVICE_MONGO_URI: mongodb://my-mongo:27017/todo
