@@ -1,4 +1,3 @@
-# values.yaml
 replicaCount: 1
 image:
   repository: my-repo
@@ -11,4 +10,6 @@ env:
 
 redis:
   usePassword: true
-  password: your-redis-password
+  password: "4GXI57FFvk"
+  host: "my-redis-master"
+  port: "6379"
