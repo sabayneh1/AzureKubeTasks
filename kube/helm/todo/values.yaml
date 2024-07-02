@@ -49,6 +49,7 @@ env:
   EMAIL_PORT: "2465"
   JWT_SECRET: "samander's_jwt_secret"
 
+#redius
 redis:
   usePassword: true
   password: "4GXI57FFvk"
