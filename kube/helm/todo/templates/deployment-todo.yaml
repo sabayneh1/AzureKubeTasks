@@ -25,12 +25,6 @@ spec:
               value: "{{ .Values.env.TODO_SERVICE_MONGO_URI }}"
             - name: JWT_SECRET
               value: "{{ .Values.env.JWT_SECRET }}"
-            - name: REDIS_HOST
-              value: "{{ .Values.redis.host }}"
-            - name: REDIS_PORT
-              value: "{{ .Values.redis.port }}"
-            - name: REDIS_PASSWORD
-              value: "{{ .Values.redis.password }}"
           resources:
             requests:
               memory: "256Mi"
@@ -38,25 +32,7 @@ spec:
             limits:
               memory: "512Mi"
               cpu: "200m"
-        - name: redis-sidecar
-          image: "sabayneh/redis-sidecar:latest"
-          imagePullPolicy: Always
-          ports:
-            - containerPort: 6379
-          env:
-            - name: REDIS_HOST
-              value: "{{ .Values.redis.host }}"
-            - name: REDIS_PORT
-              value: "{{ .Values.redis.port }}"
-            - name: REDIS_PASSWORD
-              value: "{{ .Values.redis.password }}"
-          resources:
-            requests:
-              memory: "128Mi"
-              cpu: "50m"
-            limits:
-              memory: "256Mi"
-              cpu: "100m"
+
 
 
 
