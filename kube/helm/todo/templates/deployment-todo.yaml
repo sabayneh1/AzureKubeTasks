@@ -5,7 +5,7 @@ metadata:
   labels:
     app: todo-service
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
       app: todo-service
@@ -15,6 +15,30 @@ spec:
         app: todo-service
     spec:
       containers:
+        - name: nginx
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+          env:
+            - name: REDIS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-service-config
+                  key: REDIS_HOST
+            - name: REDIS_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-service-config
+                  key: REDIS_PORT
+            - name: REDIS_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-service-config
+                  key: REDIS_PASSWORD
         - name: todo-service
           image: "{{ .Values.image.repository }}/todo-service:{{ .Values.image.tagTodoService }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -32,10 +56,34 @@ spec:
             limits:
               memory: "512Mi"
               cpu: "200m"
+        - name: redis-sidecar
+          image: redis:latest
+          ports:
+            - containerPort: 6379
+          env:
+            - name: REDIS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-service-config
+                  key: REDIS_HOST
+            - name: REDIS_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-service-config
+                  key: REDIS_PORT
+            - name: REDIS_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-service-config
+                  key: REDIS_PASSWORD
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: nginx-config
 
 
 
-
+########################################
 
 # apiVersion: apps/v1
 # kind: Deployment
@@ -66,8 +114,11 @@ spec:
 #               value: "{{ .Values.env.JWT_SECRET }}"
 #           resources:
 #             requests:
-#               memory: {{ .Values.resources.requests.memory }}
-#               cpu: {{ .Values.resources.requests.cpu }}
+#               memory: "256Mi"
+#               cpu: "100m"
 #             limits:
-#               memory: {{ .Values.resources.limits.memory }}
-#               cpu: {{ .Values.resources.limits.cpu }}
+#               memory: "512Mi"
+#               cpu: "200m"
+
+
+

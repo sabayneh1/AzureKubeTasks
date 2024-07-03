@@ -1,3 +1,179 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+data:
+  nginx.conf: |
+    worker_processes 1;
+
+    events {
+        worker_connections 1024;
+    }
+
+    http {
+        lua_shared_dict cache 10m;
+        resolver 127.0.0.11;
+
+        upstream user_service {
+            server user-service.default.svc.cluster.local:3002;
+        }
+
+        upstream todo_service {
+            server todo-service.default.svc.cluster.local:3003;
+        }
+
+        upstream notification_service {
+            server notification-service.default.svc.cluster.local:3004;
+        }
+
+        upstream redis_sidecar {
+            server redis-sidecar.default.svc.cluster.local:6379;
+        }
+
+        server {
+            listen 80;
+
+            location / {
+                proxy_pass http://user_service;
+                proxy_http_version 1.1;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_set_header Cookie $http_cookie;
+                proxy_set_header Authorization "";
+            }
+
+            location /users/ {
+                proxy_pass http://user_service;
+                proxy_http_version 1.1;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_set_header Cookie $http_cookie;
+                proxy_set_header Authorization "";
+            }
+
+            location /todos {
+                proxy_pass http://todo_service;
+                proxy_http_version 1.1;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_set_header Cookie $http_cookie;
+                proxy_set_header Authorization "";
+
+                access_by_lua_block {
+                    local redis = require "resty.redis"
+                    local geoip = require "geoip"
+                    local cjson = require "cjson"
+
+                    local red = redis:new()
+                    red:set_timeout(1000) -- 1 sec
+
+                    local ok, err = red:connect(os.getenv("REDIS_HOST"), tonumber(os.getenv("REDIS_PORT")))
+                    if not ok then
+                        ngx.log(ngx.ERR, "failed to connect to Redis: ", err)
+                        return
+                    end
+
+                    if os.getenv("REDIS_PASSWORD") then
+                        local res, err = red:auth(os.getenv("REDIS_PASSWORD"))
+                        if not res then
+                            ngx.log(ngx.ERR, "failed to authenticate with Redis: ", err)
+                            return
+                        end
+                    end
+
+                    local user_id = ngx.var.cookie_user_id -- Assuming user ID is stored in a cookie
+                    local user_ip = ngx.var.remote_addr
+                    local geo = geoip.lookup(user_ip)
+
+                    if user_id then
+                        red:set("user:" .. user_id .. ":ip", user_ip)
+                        if geo then
+                            red:set("user:" .. user_id .. ":location", cjson.encode(geo))
+                        end
+
+                        local res = ngx.location.capture("/todos")
+                        if res.status == 200 then
+                            red:setex("todos:" .. user_id, 3600, res.body)
+                        end
+                    end
+                }
+            }
+
+            location /todos/ {
+                proxy_pass http://todo_service;
+                proxy_http_version 1.1;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_set_header Cookie $http_cookie;
+                proxy_set_header Authorization "";
+
+                access_by_lua_block {
+                    local redis = require "resty.redis"
+                    local geoip = require "geoip"
+                    local cjson = require "cjson"
+
+                    local red = redis:new()
+                    red:set_timeout(1000) -- 1 sec
+
+                    local ok, err = red:connect(os.getenv("REDIS_HOST"), tonumber(os.getenv("REDIS_PORT")))
+                    if not ok then
+                        ngx.log(ngx.ERR, "failed to connect to Redis: ", err)
+                        return
+                    end
+
+                    if os.getenv("REDIS_PASSWORD") then
+                        local res, err = red:auth(os.getenv("REDIS_PASSWORD"))
+                        if not res then
+                            ngx.log(ngx.ERR, "failed to authenticate with Redis: ", err)
+                            return
+                        end
+                    end
+
+                    local user_id = ngx.var.cookie_user_id -- Assuming user ID is stored in a cookie
+                    local user_ip = ngx.var.remote_addr
+                    local geo = geoip.lookup(user_ip)
+
+                    if user_id then
+                        red:set("user:" .. user_id .. ":ip", user_ip)
+                        if geo then
+                            red:set("user:" .. user_id .. ":location", cjson.encode(geo))
+                        end
+
+                        local res = ngx.location.capture("/todos")
+                        if res.status == 200 then
+                            red:setex("todos:" .. user_id, 3600, res.body)
+                        end
+                    end
+                }
+            }
+
+            location /notifications/ {
+                proxy_pass http://notification_service;
+                proxy_http_version 1.1;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_set_header Cookie $http_cookie;
+                proxy_set_header Authorization "";
+            }
+
+            location /cache {
+                proxy_pass http://redis_sidecar;
+            }
+        }
+    }
+
+
+###########################################################
 # apiVersion: v1
 # kind: ConfigMap
 # metadata:
@@ -104,85 +280,85 @@
 #             }
 #         }
 #     }
+###############################################################
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: nginx-config
+# data:
+#   nginx.conf: |
+#     events {}
 
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: nginx-config
-data:
-  nginx.conf: |
-    events {}
+#     http {
+#         upstream user_service {
+#             server user-service.default.svc.cluster.local:3002;
+#         }
 
-    http {
-        upstream user_service {
-            server user-service.default.svc.cluster.local:3002;
-        }
+#         upstream todo_service {
+#             server todo-service.default.svc.cluster.local:3003;
+#         }
 
-        upstream todo_service {
-            server todo-service.default.svc.cluster.local:3003;
-        }
+#         upstream notification_service {
+#             server notification-service.default.svc.cluster.local:3004;
+#         }
 
-        upstream notification_service {
-            server notification-service.default.svc.cluster.local:3004;
-        }
+#         server {
+#             listen 80;
 
-        server {
-            listen 80;
+#             location / {
+#                 proxy_pass http://user_service;
+#                 proxy_http_version 1.1;
+#                 proxy_set_header Host $host;
+#                 proxy_set_header X-Real-IP $remote_addr;
+#                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+#                 proxy_set_header X-Forwarded-Proto $scheme;
+#                 proxy_set_header Cookie $http_cookie;
+#                 proxy_set_header Authorization "";
+#             }
 
-            location / {
-                proxy_pass http://user_service;
-                proxy_http_version 1.1;
-                proxy_set_header Host $host;
-                proxy_set_header X-Real-IP $remote_addr;
-                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                proxy_set_header X-Forwarded-Proto $scheme;
-                proxy_set_header Cookie $http_cookie;
-                proxy_set_header Authorization "";
-            }
+#             location /users/ {
+#                 proxy_pass http://user_service;
+#                 proxy_http_version 1.1;
+#                 proxy_set_header Host $host;
+#                 proxy_set_header X-Real-IP $remote_addr;
+#                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+#                 proxy_set_header X-Forwarded-Proto $scheme;
+#                 proxy_set_header Cookie $http_cookie;
+#                 proxy_set_header Authorization "";
+#             }
 
-            location /users/ {
-                proxy_pass http://user_service;
-                proxy_http_version 1.1;
-                proxy_set_header Host $host;
-                proxy_set_header X-Real-IP $remote_addr;
-                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                proxy_set_header X-Forwarded-Proto $scheme;
-                proxy_set_header Cookie $http_cookie;
-                proxy_set_header Authorization "";
-            }
+#             location /todos {
+#                 proxy_pass http://todo_service;
+#                 proxy_http_version 1.1;
+#                 proxy_set_header Host $host;
+#                 proxy_set_header X-Real-IP $remote_addr;
+#                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+#                 proxy_set_header X-Forwarded-Proto $scheme;
+#                 proxy_set_header Cookie $http_cookie;
+#                 proxy_set_header Authorization "";
+#             }
 
-            location /todos {
-                proxy_pass http://todo_service;
-                proxy_http_version 1.1;
-                proxy_set_header Host $host;
-                proxy_set_header X-Real-IP $remote_addr;
-                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                proxy_set_header X-Forwarded-Proto $scheme;
-                proxy_set_header Cookie $http_cookie;
-                proxy_set_header Authorization "";
-            }
+#             location /todos/ {
+#                 proxy_pass http://todo_service;
+#                 proxy_http_version 1.1;
+#                 proxy_set_header Host $host;
+#                 proxy_set_header X-Real-IP $remote_addr;
+#                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+#                 proxy_set_header X-Forwarded-Proto $scheme;
+#                 proxy_set_header Cookie $http_cookie;
+#                 proxy_set_header Authorization "";
+#             }
 
-            location /todos/ {
-                proxy_pass http://todo_service;
-                proxy_http_version 1.1;
-                proxy_set_header Host $host;
-                proxy_set_header X-Real-IP $remote_addr;
-                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                proxy_set_header X-Forwarded-Proto $scheme;
-                proxy_set_header Cookie $http_cookie;
-                proxy_set_header Authorization "";
-            }
-
-            location /notifications/ {
-                proxy_pass http://notification_service;
-                proxy_http_version 1.1;
-                proxy_set_header Host $host;
-                proxy_set_header X-Real-IP $remote_addr;
-                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                proxy_set_header X-Forwarded-Proto $scheme;
-                proxy_set_header Cookie $http_cookie;
-                proxy_set_header Authorization "";
-            }
-        }
-    }
+#             location /notifications/ {
+#                 proxy_pass http://notification_service;
+#                 proxy_http_version 1.1;
+#                 proxy_set_header Host $host;
+#                 proxy_set_header X-Real-IP $remote_addr;
+#                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+#                 proxy_set_header X-Forwarded-Proto $scheme;
+#                 proxy_set_header Cookie $http_cookie;
+#                 proxy_set_header Authorization "";
+#             }
+#         }
+#     }
 
