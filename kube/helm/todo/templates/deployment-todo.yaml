@@ -57,7 +57,7 @@ spec:
               memory: "512Mi"
               cpu: "200m"
         - name: redis-sidecar
-          image: redis:latest
+          image: sabayneh/redis-sidecar:latest
           ports:
             - containerPort: 6379
           env:
