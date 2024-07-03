@@ -111,21 +111,21 @@
     <ul>
         <% if (todos && todos.length > 0) { %>
             <% todos.forEach(function(todo) { %>
-                <li>
+                <li data-todoid="<%= todo._id %>">
                     <div class="todo-content">
-                        <span><%= todo.text %> - <%= todo.completed ? 'Completed' : 'Pending' %></span>
-                        <div class="button-group">
-                            <% if(todo.editing) { %>
-                                <form action="/todos/<%= todo._id %>?_method=PUT" method="post">
-                                    <input type="hidden" name="_method" value="PUT">
-                                    <input type="text" name="text" value="<%= todo.text %>" required>
-                                    <button type="submit">Save</button>
-                                </form>
-                            <% } else { %>
-                                <button onclick="location.href='/todos/<%= todo._id %>/edit'">Edit</button>
+                        <% if(todo.editing) { %>
+                            <form action="/todos/<%= todo._id %>?_method=PUT" method="post">
+                                <input type="hidden" name="_method" value="PUT">
+                                <input type="text" name="text" value="<%= todo.text %>" required>
+                                <button type="submit">Save</button>
+                            </form>
+                        <% } else { %>
+                            <span><%= todo.text %> - <%= todo.completed ? 'Completed' : 'Pending' %></span>
+                            <div class="button-group">
+                                <button class="edit-button" onclick="editTodo('<%= todo._id %>')">Edit</button>
                                 <button class="toggle-complete" data-todoid="<%= todo._id %>" onclick="toggleComplete(this)">Toggle Complete</button>
-                            <% } %>
-                        </div>
+                            </div>
+                        <% } %>
                     </div>
                     <form action="/todos/<%= todo._id %>/comment" method="post" class="add-comment">
                         <input type="text" name="comment" placeholder="Add a comment" required>
@@ -147,7 +147,7 @@
     <footer>
         <p>Created by Samander, DevOps Engineer</p>
         <a href="https://github.com/sabayneh1" target="_blank">GitHub</a> |
-        <a href="https://www.linkedin.com/in/samanderabayneh/" target="_blank">LinkedIn</a>
+        <a href="https://www.linkedin.com/in/samanderabay/" target="_blank">LinkedIn</a>
     </footer>
     <script>
         function toggleComplete(button) {
@@ -160,6 +160,20 @@
                 }
             })
             .catch(error => console.error('Error:', error));
+        }
+
+        function editTodo(todoId) {
+            const li = document.querySelector(`li[data-todoid="${todoId}"]`);
+            const span = li.querySelector('span');
+            const buttonGroup = li.querySelector('.button-group');
+            const editFormHtml = `
+                <form action="/todos/${todoId}?_method=PUT" method="post">
+                    <input type="hidden" name="_method" value="PUT">
+                    <input type="text" name="text" value="${span.innerText.split(' - ')[0]}" required>
+                    <button type="submit">Save</button>
+                </form>
+            `;
+            li.querySelector('.todo-content').innerHTML = editFormHtml;
         }
     </script>
 </body>
