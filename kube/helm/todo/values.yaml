@@ -52,7 +52,7 @@ env:
 #redis
 redis:
   usePassword: true
-  password: "SoEAehoZb"
+  password: "Hb0K22Lg97"
   host: "my-redis-master"
   port: "6379"
 

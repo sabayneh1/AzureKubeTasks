@@ -5,4 +5,4 @@ metadata:
 data:
   REDIS_HOST: "my-redis-master"
   REDIS_PORT: "6379"
-  REDIS_PASSWORD: "your-redis-password"
+  REDIS_PASSWORD: "Hb0K22Lg97"
