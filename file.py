@@ -16,8 +16,8 @@ def concatenate_files(start_path, output_file_path):
                         print(f"Error reading {filepath}: {e}")
 
 # Use a raw string for Windows path
-directory_path = r'/home/azureuser/AzureKubeTasks/docker/ToDo-service'
-# directory_path = r'C:\Users\saman\OneDrive\Desktop\study+projects\NCPL\projectcs\Microservice-Kubernties\eks\Blogplatform\kube'
+# directory_path = r'/home/azureuser/AzureKubeTasks/docker/ToDo-service'
+directory_path = r'C:\Users\saman\OneDrive\Desktop\study+projects\NCPL\projectcs\AzureKubeToDolist\kube\todo\templates'
 output_file_path = 'combined_output.txt'
 
 concatenate_files(directory_path, output_file_path)
