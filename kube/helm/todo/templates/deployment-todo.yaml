@@ -16,12 +16,12 @@ spec:
     spec:
       containers:
         - name: nginx
-          image: nginx:latest
+          image: openresty/openresty:latest
           ports:
             - containerPort: 80
           volumeMounts:
             - name: nginx-config
-              mountPath: /etc/nginx/nginx.conf
+              mountPath: /usr/local/openresty/nginx/conf/nginx.conf
               subPath: nginx.conf
           env:
             - name: REDIS_HOST
@@ -80,6 +80,7 @@ spec:
         - name: nginx-config
           configMap:
             name: nginx-config
+
 
 
 #second one
