@@ -5,7 +5,7 @@ metadata:
   labels:
     app: todo-service
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
       app: todo-service
@@ -15,6 +15,30 @@ spec:
         app: todo-service
     spec:
       containers:
+        - name: nginx
+          image: openresty/openresty:latest
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /usr/local/openresty/nginx/conf/nginx.conf
+              subPath: nginx.conf
+          env:
+            - name: REDIS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-service-config
+                  key: REDIS_HOST
+            - name: REDIS_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-service-config
+                  key: REDIS_PORT
+            - name: REDIS_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-service-config
+                  key: REDIS_PASSWORD
         - name: todo-service
           image: "{{ .Values.image.repository }}/todo-service:{{ .Values.image.tagTodoService }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -32,16 +56,10 @@ spec:
             limits:
               memory: "512Mi"
               cpu: "200m"
-        - name: nginx
-          image: nginx:latest
-          ports:
-            - containerPort: 80
-          volumeMounts:
-            - name: nginx-config
-              mountPath: /etc/nginx/nginx.conf
-              subPath: nginx.conf
         - name: redis-sidecar
-          image: "sabayneh/redis-sidecar:latest"
+          image: sabayneh/redis-sidecar:latest
+          ports:
+            - containerPort: 6379
           env:
             - name: REDIS_HOST
               valueFrom:
@@ -58,15 +76,6 @@ spec:
                 configMapKeyRef:
                   name: todo-service-config
                   key: REDIS_PASSWORD
-          ports:
-            - containerPort: 6379
-          resources:
-            requests:
-              memory: "128Mi"
-              cpu: "50m"
-            limits:
-              memory: "256Mi"
-              cpu: "100m"
       volumes:
         - name: nginx-config
           configMap:
