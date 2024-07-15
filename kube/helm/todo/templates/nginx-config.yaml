@@ -63,17 +63,17 @@ data:
                 proxy_set_header X-Forwarded-Proto $scheme;
                 proxy_set_header Cookie $http_cookie;
                 proxy_set_header Authorization "";
-
-                # Forward request to the Redis sidecar for caching
-                proxy_intercept_errors on;
-                error_page 200 = @cache;
             }
 
-            location @cache {
-                internal;
-                proxy_pass http://redis_sidecar/cache;
-                proxy_set_header X-User-Id $http_cookie_user_id;
+            location /todos/ {
+                proxy_pass http://todo_service;
+                proxy_http_version 1.1;
+                proxy_set_header Host $host;
                 proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_set_header Cookie $http_cookie;
+                proxy_set_header Authorization "";
             }
 
             location /notifications/ {
@@ -88,6 +88,7 @@ data:
             }
         }
     }
+
 
 
 
